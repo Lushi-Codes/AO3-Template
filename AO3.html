@@ -1,8 +1,7 @@
 <link rel="stylesheet" href="style.css">
 
-<div class="s25-ultra" id="phoneShell">
+<div class="phone-frame">
 
-  <div class="screen-pane home-screen is-active">
     <!-- Status Bar -->
     <div class="status-bar">
       <span>6:05</span>
@@ -10,193 +9,386 @@
       <span>54% ⚡</span>
     </div>
 
-    <!-- Row 1 Apps -->
-    <div class="app-row">
-      
-      <!-- Contacts -->
-      <details class="app-box">
-        <summary>
-          <div class="icon-square">📱</div>
-          <div class="app-label">Contacts</div>
-        </summary>
-        <div class="screen-ui">
-          <div class="screen-header"><span>📱 Contacts</span><span> Close </span></div>
-          <div class="contact-card"><span class="contact-name">Nii-chan ❤️</span><span class="contact-number"> +81 90-1102-8841</span></div>
-          <div class="contact-card"><span class="contact-name">Mom</span><span class="contact-number"> +81 90-3312-0094</span></div>
-          <div class="contact-card"><span class="contact-name">Dad</span><span class="contact-number"> +81 90-3312-0095</span></div>
-          <div class="contact-card"><span class="contact-name">Isagi Yoichi (Bluelock) </span><span class="contact-number"> +81 80-4419-2018</span></div>
-          <div class="contact-card"><span class="contact-name">Meguru Bachira (Bluelock) </span><span class="contact-number"> +81 80-8821-3091</span></div>
-          <div class="contact-card"><span class="contact-name">Miss Anri Teieri (Bluelock) </span><span class="contact-number"> +81 30-5510-9923</span></div>
-          <div class="contact-card"><span class="contact-name">Ego (Bluelock) </span><span class="contact-number"> +81 30-0000-1101</span></div>
-          <div class="contact-card"><span class="contact-name">Ryusei Shido (Bluelock) </span><span class="contact-number">+ 81 90-6669-1313</span></div>
-          <div class="contact-card"><span class="contact-name">Reo Mikage (Bluelock) </span><span class="contact-number"> +81 90-9999-7777</span></div>
-          <div class="contact-card"><span class="contact-name">Seishiro Nagi (Bluelock) </span><span class="contact-number"> +81 90-2201-0042</span></div>
-          <div class="contact-card"><span class="contact-name">Loki</span><span class="contact-number"> +33 6 12 34 56 78</span></div>
-          <div class="contact-card"><span class="contact-name">Charles</span><span class="contact-number"> +33 6 98 76 54 32</span></div>
-          <div class="contact-card"><span class="contact-name">Nii-chan's Assistant</span><span class="contact-number"> +34 612 89 40 11</span></div>
+    <!-- Homescreen View -->
+    <div class="lock-screen is-active" id="lockScreen">
+      <div class="lock-overlay">
+        <div class="status-bar">
+          <span class="carrier">Data</span>
+          <div class="camera-hole"></div>
+          <span class="status-right">🔒 • 44</span>
         </div>
-      </details>
 
-      <!-- Notes -->
-      <details class="app-box" data-app="notes">
-        <summary>
-          <div class="icon-square">📝</div>
-          <div class="app-label">Notes</div>
-        </summary>
-        <div class="screen-ui">
-          <div class="screen-header"><span>📝 Notes</span><span> Close </span></div>
-          <div class="note-entry"><div class="note-date">September 9, 2010</div><div class="note-text">I got my first phone! It's my birthday and Mom and Dad gifted this to me. Nii-chan helped me set it up. The birthday cake was so gooooooooddd! Nii-chan sang me a happy birthday! BEST BIRTHDAYS ARE ALWAYS WITH NII-CHAN!</div></div>
-          <div class="note-entry"><div class="note-date">October 10, 2010 (Updated: 20:32)</div><div class="note-text">IT'S NII-CHAN'S BIRTHDAY! I don't know what to get him. I have my small savings enough to buy the popsicle sticks we always eat. Nii-chan smiled at me! &gt;////&lt; Said he was happy with his gift even though Mom and Dad gave him a better one. Nii-chan is really the kindest person in the world!</div></div>
-          <div class="note-entry"><div class="note-date">November 14, 2010</div><div class="note-text">Mom got angry again because I broke the toys she recently bought. Nii-chan covered for me again. I hope I'm not a bother to him. Nii-chan is the only person who understands me.</div></div>
-          <div class="note-entry"><div class="note-date">February 14, 2011</div><div class="note-text">Someone confessed to nii-chan and for reason, I hate it. The girl doesn't even play soccer. Luckily, nii-chan turned her down, but he received a lot of chocolates. I got some too, but I just put them in my bag. We're gonna eat it this weekend. Mom warned us not to eat it all at once because of "sugar rush". Oh... Nii-chan also got me a chocolate. It's just one piece, but I think it's one of the expensive ones we saw along the way at home. I'm really happy!</div></div>
-          <div class="note-entry"><div class="note-date">April 8, 2011</div><div class="note-text">We won the Ichina FC Youth! Nii-chan let me hold the trophy even though he did most of the goals. He was so cool! Nii-chan and I will be the best strikers in the world! Mom and Dad weren't there. It's okay, all I need is nii-chan!</div></div>
-          <div class="note-entry"><div class="note-date">December 25, 2011</div><div class="note-text">We got our gifts! Nii-chan got his new shoes and I got a new pair of high socks with pads in them. Mom said it's to make sure I don't get home with scrapes and bruises.</div></div>
-          <div class="note-entry"><div class="note-date">January 1, 2012</div><div class="note-text">We saw mom and dad kissed after the countdown and I asked Nii-chan why they did that. Nii-chan said it's what people who loves each other do. I asked him if we can do it and he said we can't because we're brothers. But he was red looking and just kissed my cheek. Then my cheeks felt warm after that. It was a weird feeling but I'm happy to spend another year with nii-chan! We'll play more soccer for sure!</div></div>
-          <div class="note-entry"><div class="note-date">August 8, 2012</div><div class="note-text">Mom and Dad took us to the summer festival! They made us wear Yukatas. It was hot, but the outfit looks nice on Nii-chan. We also got masks of my favorite cartoons! We played games and Nii-chan won an owl stuff toy for me. I will treasure it forever!</div></div>
-          <div class="note-entry"><div class="note-date">September 9, 2012 (Updated: 22:59)</div><div class="note-text">Nii-chan said he has a special gift for me. I wonder what is it? NII-CHAN KISSED ME! OH MY GOSH! ON THE LIPS! &gt;//////&lt; I'M SO HAPPY! BEST BIRTHDAY EVER! I love my nii-chan so much! But he told me not to say it to anyone, especially to our parents. They'll never understand. None of them will.</div></div>
-          <div class="note-entry"><div class="note-date">October 10, 2012</div><div class="note-text">I bought nii-chan a seagull keychain for his phone. Then while our parents are looking away, nii-chan quickly gave me a kiss. I hope this will last forever.</div></div>
-          <div class="note-entry"><div class="note-date">January 1, 2013</div><div class="note-text">We built a snowman! Then we watched the fireworks in our backyard. Nii-chan and I were holding hands the entire time. I feel like this is going to be a fantastic year!</div></div>
-          <div class="note-entry"><div class="note-date">March 10, 2013</div><div class="note-text">We won another match! Me and nii-chan are unstoppable! We're getting closer to being the best strikers in the world!</div></div>
-          <div class="note-entry"><div class="note-date">December 25, 2013</div><div class="note-text">Nii-chan and I cuddles the whole day. It was freezing and our parents went to visit our grandparents. So it's just us. So guess what happened :P</div></div>
-          <div class="note-entry"><div class="note-date">February 18, 2014</div><div class="note-text">Nii-chan received a letter from Re Al Madrid. They wanted to recruit him! I'M SO PROUD OF NII-CHAN! He's really the coolest striker!</div></div>
-          <div class="note-entry"><div class="note-date">March 24, 2014</div><div class="note-text">We had our final game as a team. We won, of course! Nii-chan had the most goals again! I'm really proud to be his brother!</div></div>
-          <div class="note-entry"><div class="note-date">April 10, 2014</div><div class="note-text">Nii-chan's flight is tomorrow. It's sad and it'll be lonely without him, but he'll be out there reaching for our dream. We watched the sunset and nii-chan asked me what will I do when he's gone. Told him I'll find a replacement. I don't think he liked the answer. Well, it's not like anyone can replace him. No one can.</div></div>
-          <div class="note-entry"><div class="note-date">April 11, 2014 (Updated: 20:02)</div><div class="note-text">We did it.......... O/////////O WOW! Nii-chan is so hot! AHABDJBSKFSDOFLKDSFKDSDMKDKJSBFNKJSDBJSENREJSNRL &gt;///////&lt; Nii-chan just left. I'm not sad about it because I know I'll be playing with him soon! Besides, we made a promise to each other aside from our shared dream. Just this for now</div></div>
+        <div class="lock-icon">🔒</div>
+
+        <div class="clock-bands">
+          <div class="band top-band"></div>
+          <div class="band middle-band"></div>
+          <div class="band bottom-band"></div>
         </div>
-      </details>
 
-      <!-- Messages -->
-      <details class="app-box">
-        <summary>
-          <div class="icon-square icon-checkered">💬</div>
-          <div class="app-label">Messages</div>
-        </summary>
-        <div class="screen-ui">
-          <div class="screen-header"><span>💬 Messages</span><span>Close</span></div>
-          <p><b>Nii-chan &lt;3</b>: Don't forget your training schedule.</p>
-          <p><b>Isagi Yoichi</b>: Rin, are you coming to the field early today?</p>
+        <div class="lock-center">
+          <div class="analog-clock" id="analogClock">
+            <div class="hand hour" id="hourHand"></div>
+            <div class="hand minute" id="minuteHand"></div>
+            <div class="hand second" id="secondHand"></div>
+            <div class="nums">
+              <div class="num" style="--i:12">12</div>
+              <div class="num" style="--i:1">1</div>
+              <div class="num" style="--i:2">2</div>
+              <div class="num" style="--i:3">3</div>
+              <div class="num" style="--i:4">4</div>
+              <div class="num" style="--i:5">5</div>
+              <div class="num" style="--i:6">6</div>
+              <div class="num" style="--i:7">7</div>
+              <div class="num" style="--i:8">8</div>
+              <div class="num" style="--i:9">9</div>
+              <div class="num" style="--i:10">10</div>
+              <div class="num" style="--i:11">11</div>
+            </div>
+          </div>
+
+          <div class="lock-date" id="lockDate">Sun, August 9</div>
         </div>
-      </details>
+      </div>
+    </div>
 
-      <!-- Phone -->
-      <details class="app-box">
-        <summary>
-          <div class="icon-square">📞</div>
+    <div class="homescreen" id="homescreen">
+
+      <!-- App Grid (4 columns) -->
+      <div class="grid-row app-grid">
+        <div class="app-icon" onclick="openApp('app-phone', this)" data-app="phone">
+          <div class="icon-box">📞</div>
           <div class="app-label">Phone</div>
-        </summary>
-        <div class="screen-ui">
-          <div class="screen-header"><span>📞 Phone</span><span>Close</span></div>
-          <p><b>Recent Calls:</b></p>
-          <p>• Nii-chan &lt;3 (Incoming - 14 mins)</p>
         </div>
-      </details>
 
-    </div>
-
-    <!-- YT Music Widget -->
-    <details class="widget-box">
-      <summary>
-        <div class="s25-widget">
-          <div class="widget-title">🎵 YT Music</div>
-          <p style="margin:0; font-size:0.8em; color:#ffffff;"><b>Now Playing:</b> Heavy Metal / Focus Playlist</p>
+        <div class="app-icon" onclick="openApp('app-camera', this)" data-app="camera">
+          <div class="icon-box">📷</div>
+          <div class="app-label">Camera</div>
         </div>
-      </summary>
-      <div class="screen-ui">
-        <div class="screen-header"><span>🎵 YT Music</span><span>▲ Close</span></div>
-        <p>Playing: Heavy Metal / Focus Playlist</p>
-      </div>
-    </details>
 
-    <!-- Row 2 Apps -->
-    <div class="app-row">
-
-      <!-- Soccer News -->
-      <details class="app-box">
-        <summary>
-          <div class="icon-square icon-checkered"></div>
-          <div class="app-label">Soccer News</div>
-        </summary>
-        <div class="screen-ui">
-          <div class="screen-header"><span>⚽ Soccer News</span><span>Close</span></div>
-          <div class="news-card">
-            <div class="news-title">Re Al Madrid Prodigy Itoshi Sae Dominates Youth Academy League</div>
-            <p>Japanese prodigy Itoshi Sae delivered another masterclass performance today, scoring twice and assisting three goals in Re Al Madrid's youth fixture...</p>
-          </div>
-          <div class="news-card">
-            <div class="news-title">Spanish Media Dubs Sae 'Japan's Greatest Treasure'</div>
-            <p>Scouts across Europe continue to praise Itoshi Sae's unmatched vision and precise ball control as Re Al Madrid prepares for the upcoming tournament...</p>
-          </div>
-        </div>
-      </details>
-
-      <!-- Gallery -->
-      <details class="app-box">
-        <summary>
-          <div class="icon-square">🖼️</div>
+        <div class="app-icon" onclick="openApp('app-gallery', this)" data-app="gallery">
+          <div class="icon-box">🖼️</div>
           <div class="app-label">Gallery</div>
-        </summary>
-        <div class="screen-ui">
-          <div class="screen-header"><span>🖼️ Gallery</span><span>Close</span></div>
-          <p><i>[Folder: Hidden / Protected]</i></p>
-          <p>• 1,240 photos saved (Mostly tagged under "Nii-chan").</p>
         </div>
-      </details>
 
-      <!-- Files -->
-      <details class="app-box">
-        <summary>
-          <div class="icon-square">📁</div>
-          <div class="app-label">Files</div>
-        </summary>
-        <div class="screen-ui">
-          <div class="screen-header"><span>📁 Files</span><span>Close</span></div>
-          <p>• match_analysis_sae.mp4</p>
-          <p>• bluelock_data_logs.csv</p>
-        </div>
-      </details>
-
-      <!-- Clock -->
-      <details class="app-box">
-        <summary>
-          <div class="icon-square">⏰</div>
+        <div class="app-icon" onclick="openApp('app-clock', this)" data-app="clock">
+          <div class="icon-box">⏰</div>
           <div class="app-label">Clock</div>
-        </summary>
-        <div class="screen-ui">
-          <div class="screen-header"><span>⏰ Clock</span><span>Close</span></div>
-          <p><b>Alarms:</b> 05:00 AM (Daily Morning Run - Strikers)</p>
         </div>
-      </details>
 
-    </div>
-
-    <!-- Calendar Widget -->
-    <details class="widget-box">
-      <summary>
-        <div class="s25-widget">
-          <div class="widget-title">📅 Calendar</div>
-          <p style="margin:0; font-size:0.8em; color:#ffffff;">• Oct 10: Nii-chan's Birthday 🎂</p>
+        <div class="app-icon" onclick="openApp('app-contacts', this)" data-app="contacts">
+          <div class="icon-box">📇</div>
+          <div class="app-label">Contacts</div>
         </div>
-      </summary>
-      <div class="screen-ui">
-        <div class="screen-header"><span>📅 Calendar</span><span>▲ Close</span></div>
-        <p>• Oct 10: Nii-chan's Birthday 🎂</p>
-        <p>• Sep 09: Rin's Birthday ⚽</p>
+
+        <div class="app-icon" onclick="openApp('app-messages', this)" data-app="messages">
+          <div class="icon-box">💬</div>
+          <div class="app-label">Messages</div>
+        </div>
+
+        <div class="app-icon" onclick="openApp('app-notes', this)" data-app="notes">
+          <div class="icon-box">🗒️</div>
+          <div class="app-label">Notes</div>
+        </div>
+
+        <div class="app-icon locked" onclick="openApp('app-settings', this)" data-app="settings" title="Locked">
+          <div class="icon-box">⚙️</div>
+          <div class="app-label">Settings</div>
+        </div>
+
+        <div class="app-icon locked" onclick="openApp('app-socmed', this)" data-app="socmed" title="Locked">
+          <div class="icon-box">📱</div>
+          <div class="app-label">SocMed</div>
+        </div>
+
+        <div class="app-icon locked" onclick="openApp('app-games', this)" data-app="games" title="Locked">
+          <div class="icon-box">🎮</div>
+          <div class="app-label">Games</div>
+        </div>
+
+        <div class="app-icon" onclick="openApp('app-calendar', this)" data-app="calendar">
+          <div class="icon-box">📅</div>
+          <div class="app-label">Calendar</div>
+        </div>
+
+        <div class="app-icon" onclick="openApp('app-calculator', this)" data-app="calculator">
+          <div class="icon-box">🧮</div>
+          <div class="app-label">Calculator</div>
+        </div>
+
+        <div class="app-icon locked" onclick="openApp('app-shopping', this)" data-app="shopping" title="Locked">
+          <div class="icon-box">🛍️</div>
+          <div class="app-label">Shops</div>
+        </div>
       </div>
-    </details>
+
+    
+
+    <!-- --- APP SCREENS --- -->
+
+    <!-- Contacts Screen -->
+    <div id="app-contacts" class="app-screen">
+      <div class="screen-header">
+        <button class="back-btn" onclick="closeApp('app-contacts')">‹ Back</button>
+        <div class="screen-title">Contacts</div>
+        <div style="width: 50px;"></div>
+      </div>
+      <div class="screen-body">
+        <div class="contact-item"><span class="contact-name">Nii-chan &lt;3</span><span class="contact-num">+81 90-1102-8841</span></div>
+        <div class="contact-item"><span class="contact-name">Mom</span><span class="contact-num">+81 90-3312-0094</span></div>
+        <div class="contact-item"><span class="contact-name">Dad</span><span class="contact-num">+81 90-3312-0095</span></div>
+        <div class="contact-item"><span class="contact-name">Isagi Yoichi</span><span class="contact-num">+81 80-4419-2018</span></div>
+        <div class="contact-item"><span class="contact-name">Meguru Bachira</span><span class="contact-num">+81 80-8821-3091</span></div>
+        <div class="contact-item"><span class="contact-name">Miss Anri Teieri</span><span class="contact-num">+81 30-5510-9923</span></div>
+        <div class="contact-item"><span class="contact-name">Ego</span><span class="contact-num">+81 30-0000-1101</span></div>
+        <div class="contact-item"><span class="contact-name">Ryusei Shido</span><span class="contact-num">+81 90-6669-1313</span></div>
+        <div class="contact-item"><span class="contact-name">Reo Mikage</span><span class="contact-num">+81 90-9999-7777</span></div>
+        <div class="contact-item"><span class="contact-name">Seishiro Nagi</span><span class="contact-num">+81 90-2201-0042</span></div>
+        <div class="contact-item"><span class="contact-name">Loki</span><span class="contact-num">+33 6 12 34 56 78</span></div>
+        <div class="contact-item"><span class="contact-name">Charles</span><span class="contact-num">+33 6 98 76 54 32</span></div>
+        <div class="contact-item"><span class="contact-name">Nii-chan's Assistant</span><span class="contact-num">+34 612 89 40 11</span></div>
+      </div>
+    </div>
+
+    <!-- Camera Screen (placeholder) -->
+    <div id="app-camera" class="app-screen">
+      <div class="screen-header">
+        <button class="back-btn" onclick="closeApp('app-camera')">‹ Back</button>
+        <div class="screen-title">Camera</div>
+        <div style="width: 50px;"></div>
+      </div>
+      <div class="screen-body">
+        <p>Camera placeholder — access is allowed but non-functional in this demo.</p>
+      </div>
+    </div>
+
+    <!-- Notes Screen -->
+    <div id="app-notes" class="app-screen">
+      <div class="screen-header">
+        <button class="back-btn" onclick="closeApp('app-notes')">‹ Back</button>
+        <div class="screen-title">Notes</div>
+        <div style="width: 50px;"></div>
+      </div>
+      <div class="screen-body">
+        <div class="note-card"><div class="note-date">September 9, 2010</div><div class="note-text">I got my first phone! It's my birthday and Mom and Dad gifted this to me. Nii-chan helped me set it up. The birthday cake was so gooooooooddd! Nii-chan sang me a happy birthday! BEST BIRTHDAYS ARE ALWAYS WITH NII-CHAN!</div></div>
+        <div class="note-card"><div class="note-date">October 10, 2010 (Updated: 20:32)</div><div class="note-text">IT'S NII-CHAN'S BIRTHDAY! I don't know what to get him. I have my small savings enough to buy the popsicle sticks we always eat. Nii-chan smiled at me! &gt;////&lt; Said he was happy with his gift even though Mom and Dad gave him a better one. Nii-chan is really the kindest person in the world!</div></div>
+        <div class="note-card"><div class="note-date">November 14, 2010</div><div class="note-text">Mom got angry again because I broke the toys she recently bought. Nii-chan covered for me again. I hope I'm not a bother to him. Nii-chan is the only person who understands me.</div></div>
+        <div class="note-card"><div class="note-date">February 14, 2011</div><div class="note-text">Someone confessed to nii-chan and for reason, I hate it. The girl doesn't even play soccer. Luckily, nii-chan turned her down, but he received a lot of chocolates. I got some too, but I just put them in my bag. We're gonna eat it this weekend. Mom warned us not to eat it all at once because of "sugar rush". Oh... Nii-chan also got me a chocolate. It's just one piece, but I think it's one of the expensive ones we saw along the way at home. I'm really happy!</div></div>
+        <div class="note-card"><div class="note-date">April 8, 2011</div><div class="note-text">We won the Ichina FC Youth! Nii-chan let me hold the trophy even though he did most of the goals. He was so cool! Nii-chan and I will be the best strikers in the world! Mom and Dad weren't there. It's okay, all I need is nii-chan!</div></div>
+        <div class="note-card"><div class="note-date">December 25, 2011</div><div class="note-text">We got our gifts! Nii-chan got his new shoes and I got a new pair of high socks with pads in them. Mom said it's to make sure I don't get home with scrapes and bruises.</div></div>
+        <div class="note-card"><div class="note-date">January 1, 2012</div><div class="note-text">We saw mom and dad kissed after the countdown and I asked Nii-chan why they did that. Nii-chan said it's what people who loves each other do. I asked him if we can do it and he said we can't because we're brothers. But he was red looking and just kissed my cheek. Then my cheeks felt warm after that. It was a weird feeling but I'm happy to spend another year with nii-chan! We'll play more soccer for sure!</div></div>
+        <div class="note-card"><div class="note-date">August 8, 2012</div><div class="note-text">Mom and Dad took us to the summer festival! They made us wear Yukatas. It was hot, but the outfit looks nice on Nii-chan. We also got masks of my favorite cartoons! We played games and Nii-chan won an owl stuff toy for me. I will treasure it forever!</div></div>
+        <div class="note-card"><div class="note-date">September 9, 2012 (Updated: 22:59)</div><div class="note-text">Nii-chan said he has a special gift for me. I wonder what is it? NII-CHAN KISSED ME! OH MY GOSH! ON THE LIPS! I'M SO HAPPY! BEST BIRTHDAY EVER! I love my nii-chan so much! But he told me not to say it to anyone, especially to our parents. They'll never understand. None of them will.</div></div>
+        <div class="note-card"><div class="note-date">October 10, 2012</div><div class="note-text">I bought nii-chan a seagull keychain for his phone. Then while our parents are looking away, nii-chan quickly gave me a kiss. I hope this will last forever.</div></div>
+        <div class="note-card"><div class="note-date">January 1, 2013</div><div class="note-text">We built a snowman! Then we watched the fireworks in our backyard. Nii-chan and I were holding hands the entire time. I feel like this is going to be a fantastic year!</div></div>
+        <div class="note-card"><div class="note-date">March 10, 2013</div><div class="note-text">We won another match! Me and nii-chan are unstoppable! We're getting closer to being the best strikers in the world!</div></div>
+        <div class="note-card"><div class="note-date">December 25, 2013</div><div class="note-text">Nii-chan and I cuddles the whole day. It was freezing and our parents went to visit our grandparents. So it's just us. So guess what happened :P</div></div>
+        <div class="note-card"><div class="note-date">February 18, 2014</div><div class="note-text">Nii-chan received a letter from Re Al Madrid. They wanted to recruit him! I'M SO PROUD OF NII-CHAN! He's really the coolest striker!</div></div>
+        <div class="note-card"><div class="note-date">March 24, 2014</div><div class="note-text">We had our final game as a team. We won, of course! Nii-chan had the most goals again! I'm really proud to be his brother!</div></div>
+        <div class="note-card"><div class="note-date">April 10, 2014</div><div class="note-text">Nii-chan's flight is tomorrow. It's sad and it'll be lonely without him, but he'll be out there reaching for our dream. We watched the sunset and nii-chan asked me what will I do when he's gone. Told him I'll find a replacement. I don't think he liked the answer. Well, it's not like anyone can replace him. No one can.</div></div>
+        <div class="note-card"><div class="note-date">April 11, 2014 (Updated: 20:02)</div><div class="note-text">We did it.......... O/////////O WOW! Nii-chan is so hot! AHABDJBSKFSDOFLKDSFKDSDMKDKJSBFNKJSDBJSENREJSNRL Nii-chan just left. I'm not sad about it because I know I'll be playing with him soon! Besides, we made a promise to each other aside from our shared dream. Just this for now</div></div>
+      </div>
+    </div>
+
+    <!-- Messages Screen -->
+    <div id="app-messages" class="app-screen">
+      <div class="screen-header">
+        <button class="back-btn" onclick="closeApp('app-messages')">‹ Back</button>
+        <div class="screen-title">Messages</div>
+        <div style="width: 50px;"></div>
+      </div>
+      <div class="screen-body messages-body">
+        <div class="message-list">
+          <div class="message-item">
+            <div class="avatar" style="background-image: url('')">SN</div>
+            <div class="message-main">
+              <div class="message-name"> Shitty Aniki </div>
+              <div class="message-snippet">You: I hate you!</div>
+            </div>
+            <div class="message-meta">
+              <div class="message-date">Fri</div>
+            </div>
+          </div>
+
+          <div class="message-item">
+            <div class="avatar"> M </div>
+            <div class="message-main">
+              <div class="message-name">Mom</div>
+              <div class="message-snippet">Get home safe, darling!</div>
+            </div>
+            <div class="message-meta"><div class="message-date">Fri</div></div>
+          </div>
+
+          <div class="message-item">
+            <div class="avatar">D</div>
+            <div class="message-main">
+              <div class="message-name">Dad</div>
+              <div class="message-snippet">See you in a few weeks, Rin</div>
+            </div>
+            <div class="message-meta"><div class="message-date">Wed</div></div>
+          </div>
+
+          <div class="message-item">
+            <div class="avatar">IY</div>
+            <div class="message-main">
+              <div class="message-name">Isagi Yoichi</div>
+              <div class="message-snippet">You: Shut up</div>
+            </div>
+            <div class="message-meta"><div class="message-date">Mon</div></div>
+          </div>
+
+          <div class="message-item">
+            <div class="avatar">SR</div>
+            <div class="message-main">
+              <div class="message-name">Shidou Ryusei</div>
+              <div class="message-snippet">You: I'm not interested</div>
+            </div>
+            <div class="message-meta"><div class="message-date">Mon</div><div class="unread-badge">2</div></div>
+          </div>
+
+          <div class="message-item">
+            <div class="avatar">MAT</div>
+            <div class="message-main">
+              <div class="message-name">Miss Anri Teieri</div>
+              <div class="message-snippet">Please get here before 5 PM. Thank you!</div>
+            </div>
+            <div class="message-meta"><div class="message-date">Mon</div></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Screen (placeholder) -->
+    <div id="app-settings" class="app-screen">
+      <div class="screen-header">
+        <button class="back-btn" onclick="closeApp('app-settings')">‹ Back</button>
+        <div class="screen-title">Settings</div>
+        <div style="width: 50px;"></div>
+      </div>
+      <div class="screen-body">
+        <p>This app is locked.</p>
+      </div>
+    </div>
+
+    <!-- Calculator Screen (placeholder) -->
+    <div id="app-calculator" class="app-screen">
+      <div class="screen-header">
+        <button class="back-btn" onclick="closeApp('app-calculator')">‹ Back</button>
+        <div class="screen-title">Calculator</div>
+        <div style="width: 50px;"></div>
+      </div>
+      <div class="screen-body">
+        <p>Calculator is available.</p>
+      </div>
+    </div>
+
+    <!-- Soccer News Screen -->
+    <div id="app-soccer" class="app-screen">
+      <div class="screen-header">
+        <button class="back-btn" onclick="closeApp('app-soccer')">‹ Back</button>
+        <div class="screen-title">Soccer News</div>
+        <div style="width: 50px;"></div>
+      </div>
+      <div class="screen-body">
+        <div class="news-card">
+          <div class="news-title">Re Al Madrid Prodigy Itoshi Sae Dominates Youth Academy League</div>
+          <p>Japanese prodigy Itoshi Sae delivered another masterclass performance today, scoring twice and assisting three goals in Re Al Madrid's youth fixture...</p>
+        </div>
+        <div class="news-card">
+          <div class="news-title">Spanish Media Dubs Sae 'Japan's Greatest Treasure'</div>
+          <p>Scouts across Europe continue to praise Itoshi Sae's unmatched vision and precise ball control as Re Al Madrid prepares for the upcoming tournament...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Other Screens Placeholders -->
+    <div id="app-phone" class="app-screen">
+      <div class="screen-header">
+        <button class="back-btn" onclick="closeApp('app-phone')">‹ Back</button>
+        <div class="screen-title">Phone</div>
+        <div style="width:50px;"></div>
+      </div>
+      <div class="screen-body phone-screen-body">
+        <div class="phone-tabbar">
+          <button class="phone-tab" data-tab="keypad" onclick="phoneSwitchTab('keypad', this)">Keypad</button>
+          <button class="phone-tab active" data-tab="recents" onclick="phoneSwitchTab('recents', this)">Recents</button>
+          <button class="phone-tab" data-tab="contacts" onclick="phoneSwitchTab('contacts', this)">Contacts</button>
+        </div>
+
+        <div class="phone-tabview" id="phoneKeypad" style="display:none;">
+          <div class="keypad">
+            <div class="key-row">
+              <button class="key">1</button>
+              <button class="key">2</button>
+              <button class="key">3</button>
+            </div>
+            <div class="key-row">
+              <button class="key">4</button>
+              <button class="key">5</button>
+              <button class="key">6</button>
+            </div>
+            <div class="key-row">
+              <button class="key">7</button>
+              <button class="key">8</button>
+              <button class="key">9</button>
+            </div>
+            <div class="key-row">
+              <button class="key">*</button>
+              <button class="key">0</button>
+              <button class="key">#</button>
+            </div>
+            <div class="call-row">
+              <button class="call-btn">📞</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="phone-tabview" id="phoneRecents">
+          <div class="recents-list">
+            <div class="recents-group">Friday, August 7</div>
+            <div class="recent-item"><div class="recent-name">Mom (2)</div><div class="recent-time">5:42 PM</div></div>
+            <div class="recents-group">Tuesday, August 4</div>
+            <div class="recent-item"><div class="recent-name">Miss Anri Teieri</div><div class="recent-time">6:27 PM</div></div>
+            <div class="recent-item"><div class="recent-name">Mom (2)</div><div class="recent-sub">(03) 9310 4288</div><div class="recent-time">1:35 PM</div></div>
+            <div class="recents-group">Monday, August 3</div>
+            <div class="recent-item"><div class="recent-name">Shitty Aniki (4)</div><div class="recent-time">6:06 PM</div></div>
+          </div>
+        </div>
+
+        <div class="phone-tabview" id="phoneContacts" style="display:none;">
+          <div class="contacts-list">
+            <div class="contact-row"><div class="contact-avatar">SA</div><div class="contact-name">Shitty Aniki</div></div>
+            <div class="contact-row"><div class="contact-avatar">M</div><div class="contact-name">Mom</div></div>
+            <div class="contact-row"><div class="contact-avatar">D</div><div class="contact-name">Dad</div></div>
+            <div class="contact-row"><div class="contact-avatar">IS</div><div class="contact-name">Isagi Yoichi</div></div>
+            <div class="contact-row"><div class="contact-avatar">MB</div><div class="contact-name">Meguru Bachira</div></div>
+            <div class="contact-row"><div class="contact-avatar">MAT</div><div class="contact-name">Miss Anri Teieri</div></div>
+            <div class="contact-row"><div class="contact-avatar">E</div><div class="contact-name">Ego</div></div>
+            <div class="contact-row"><div class="contact-avatar">RS</div><div class="contact-name">Ryusei Shido</div></div>
+            <div class="contact-row"><div class="contact-avatar">RM</div><div class="contact-name">Reo Mikage</div></div>
+            <div class="contact-row"><div class="contact-avatar">SN</div><div class="contact-name">Seishiro Nagi</div></div>
+            <div class="contact-row"><div class="contact-avatar">Lo</div><div class="contact-name">Loki</div></div>
+            <div class="contact-row"><div class="contact-avatar">Ch</div><div class="contact-name">Charles</div></div>
+            <div class="contact-row"><div class="contact-avatar">AA</div><div class="contact-name">Aniki's Assistant</div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div id="app-ytmusic" class="app-screen"><div class="screen-header"><button class="back-btn" onclick="closeApp('app-ytmusic')">‹ Back</button><div class="screen-title">YT Music</div><div style="width:50px;"></div></div><div class="screen-body"><p><b>Now Playing:</b> Heavy Metal / Focus Playlist</p></div></div>
+    <div id="app-gallery" class="app-screen"><div class="screen-header"><button class="back-btn" onclick="closeApp('app-gallery')">‹ Back</button><div class="screen-title">Gallery</div><div style="width:50px;"></div></div><div class="screen-body"><p><i>[Folder: Hidden]</i> 1,240 photos (Tagged: Nii-chan)</p></div></div>
+    <div id="app-files" class="app-screen"><div class="screen-header"><button class="back-btn" onclick="closeApp('app-files')">‹ Back</button><div class="screen-title">Files</div><div style="width:50px;"></div></div><div class="screen-body"><p>• match_analysis_sae.mp4</p></div></div>
+    <div id="app-clock" class="app-screen"><div class="screen-header"><button class="back-btn" onclick="closeApp('app-clock')">‹ Back</button><div class="screen-title">Clock</div><div style="width:50px;"></div></div><div class="screen-body"><p><b>Alarm:</b> 05:00 AM (Strikers Run)</p></div></div>
+    <div id="app-calendar" class="app-screen"><div class="screen-header"><button class="back-btn" onclick="closeApp('app-calendar')">‹ Back</button><div class="screen-title">Calendar</div><div style="width:50px;"></div></div><div class="screen-body"><p>• Oct 10: Nii-chan's Birthday 🎂</p><p>• Sep 09: Rin's Birthday ⚽</p></div></div>
+
   </div>
 
-  <div class="screen-pane notes-app-screen" id="notesAppScreen">
-    <div class="status-bar">
-      <span>6:05</span>
-      <div class="camera-hole"></div>
-      <span>54% ⚡</span>
-    </div>
-    <div class="notes-nav">
-      <button class="back-btn" type="button" id="backToHome">← Back</button>
-      <span class="notes-title">📝 Notes</span>
-    </div>
-    <div class="screen-ui" id="notesAppContent"></div>
+  <!-- soft navigation keys (Back / Home / Apps) -->
+  <div class="soft-keys" role="navigation">
+    <button class="soft-btn" onclick="softApps()">☰</button>
+    <button class="soft-btn" onclick="softHome()">◯</button>
+    <button class="soft-btn" onclick="softBack()">‹</button>
   </div>
-</div>
 
 <script src="script.js"></script>

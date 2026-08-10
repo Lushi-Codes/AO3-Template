@@ -167,9 +167,7 @@
         <div style="width: 50px;"></div>
       </div>
       <div class="screen-body">
-        <div class="notes-list">
-          <div class="loading">Loading notes…</div>
-        </div>
+        <!-- Get from Notes.html -->
       </div>
     </div>
 
@@ -180,20 +178,10 @@
         <div class="screen-title">Messages</div>
         <div style="width: 50px;"></div>
       </div>
-      <div class="screen-body messages-body">
+      <!-- Get from Messages.html -->
+      <div class="screen-body">
         <div class="message-list">
-          <div class="loading">Loading messages…</div>
-        </div>
-        <div class="conversation-container" style="display:none;">
-          <div class="conv-header">
-            <button type="button" class="conv-back">‹ Chats</button>
-            <div class="conv-title">Conversation</div>
-          </div>
-          <div class="conversation-scroll"></div>
-          <div class="conv-input-row">
-            <input type="text" class="conv-input" placeholder="Type a message..." />
-            <button type="button" class="conv-send">Send</button>
-          </div>
+          <!-- Message items will be populated here -->
         </div>
       </div>
     </div>
@@ -284,7 +272,7 @@
 
         <div class="phone-tabview" id="phoneContacts" style="display:none;">
           <div class="contacts-list">
-            <!-- Get from Contacts.html -->
+            <!-- contacts here -->
           </div>
         </div>
 

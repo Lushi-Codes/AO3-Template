@@ -1,0 +1,194 @@
+<div class="contact-row" data-number="+81 90-1102-8841" tabindex="0">
+  <div class="contact-avatar">N</div>
+  <div class="contact-main">
+    <div class="contact-name">Nii-chan &lt;3</div>
+    <div class="contact-details">
+      <div class="contact-number">+81 90-1102-8841</div>
+      <div class="contact-actions">
+        <button class="action-btn action-call" title="Call">📞</button>
+        <button class="action-btn action-msg" title="Message">💬</button>
+        <button class="action-btn action-info" title="Info">ℹ️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contact-row" data-number="+81 90-3312-0094" tabindex="0">
+  <div class="contact-avatar">M</div>
+  <div class="contact-main">
+    <div class="contact-name">Mom</div>
+    <div class="contact-details">
+      <div class="contact-number">+81 90-3312-0094</div>
+      <div class="contact-actions">
+        <button class="action-btn action-call" title="Call">📞</button>
+        <button class="action-btn action-msg" title="Message">💬</button>
+        <button class="action-btn action-info" title="Info">ℹ️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contact-row" data-number="+81 90-3312-0095" tabindex="0">
+  <div class="contact-avatar">D</div>
+  <div class="contact-main">
+    <div class="contact-name">Dad</div>
+    <div class="contact-details">
+      <div class="contact-number">+81 90-3312-0095</div>
+      <div class="contact-actions">
+        <button class="action-btn action-call" title="Call">📞</button>
+        <button class="action-btn action-msg" title="Message">💬</button>
+        <button class="action-btn action-info" title="Info">ℹ️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contact-row" data-number="+81 80-4419-2018" tabindex="0">
+  <div class="contact-avatar">IY</div>
+  <div class="contact-main">
+    <div class="contact-name">Isagi Yoichi</div>
+    <div class="contact-details">
+      <div class="contact-number">+81 80-4419-2018</div>
+      <div class="contact-actions">
+        <button class="action-btn action-call" title="Call">📞</button>
+        <button class="action-btn action-msg" title="Message">💬</button>
+        <button class="action-btn action-info" title="Info">ℹ️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contact-row" data-number="+81 80-8821-3091" tabindex="0">
+  <div class="contact-avatar">MB</div>
+  <div class="contact-main">
+    <div class="contact-name">Meguru Bachira</div>
+    <div class="contact-details">
+      <div class="contact-number">+81 80-8821-3091</div>
+      <div class="contact-actions">
+        <button class="action-btn action-call" title="Call">📞</button>
+        <button class="action-btn action-msg" title="Message">💬</button>
+        <button class="action-btn action-info" title="Info">ℹ️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contact-row" data-number="+81 30-5510-9923" tabindex="0">
+  <div class="contact-avatar">A</div>
+  <div class="contact-main">
+    <div class="contact-name">Miss Anri Teieri</div>
+    <div class="contact-details">
+      <div class="contact-number">+81 30-5510-9923</div>
+      <div class="contact-actions">
+        <button class="action-btn action-call" title="Call">📞</button>
+        <button class="action-btn action-msg" title="Message">💬</button>
+        <button class="action-btn action-info" title="Info">ℹ️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contact-row" data-number="+81 30-0000-1101" tabindex="0">
+  <div class="contact-avatar">E</div>
+  <div class="contact-main">
+    <div class="contact-name">Ego</div>
+    <div class="contact-details">
+      <div class="contact-number">+81 30-0000-1101</div>
+      <div class="contact-actions">
+        <button class="action-btn action-call" title="Call">📞</button>
+        <button class="action-btn action-msg" title="Message">💬</button>
+        <button class="action-btn action-info" title="Info">ℹ️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contact-row" data-number="+81 90-6669-1313" tabindex="0">
+  <div class="contact-avatar">R</div>
+  <div class="contact-main">
+    <div class="contact-name">Ryusei Shido</div>
+    <div class="contact-details">
+      <div class="contact-number">+81 90-6669-1313</div>
+      <div class="contact-actions">
+        <button class="action-btn action-call" title="Call">📞</button>
+        <button class="action-btn action-msg" title="Message">💬</button>
+        <button class="action-btn action-info" title="Info">ℹ️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contact-row" data-number="+81 90-9999-7777" tabindex="0">
+  <div class="contact-avatar">Re</div>
+  <div class="contact-main">
+    <div class="contact-name">Reo Mikage</div>
+    <div class="contact-details">
+      <div class="contact-number">+81 90-9999-7777</div>
+      <div class="contact-actions">
+        <button class="action-btn action-call" title="Call">📞</button>
+        <button class="action-btn action-msg" title="Message">💬</button>
+        <button class="action-btn action-info" title="Info">ℹ️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contact-row" data-number="+81 90-2201-0042" tabindex="0">
+  <div class="contact-avatar">SN</div>
+  <div class="contact-main">
+    <div class="contact-name">Seishiro Nagi</div>
+    <div class="contact-details">
+      <div class="contact-number">+81 90-2201-0042</div>
+      <div class="contact-actions">
+        <button class="action-btn action-call" title="Call">📞</button>
+        <button class="action-btn action-msg" title="Message">💬</button>
+        <button class="action-btn action-info" title="Info">ℹ️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contact-row" data-number="+33 6 12 34 56 78" tabindex="0">
+  <div class="contact-avatar">L</div>
+  <div class="contact-main">
+    <div class="contact-name">Loki</div>
+    <div class="contact-details">
+      <div class="contact-number">+33 6 12 34 56 78</div>
+      <div class="contact-actions">
+        <button class="action-btn action-call" title="Call">📞</button>
+        <button class="action-btn action-msg" title="Message">💬</button>
+        <button class="action-btn action-info" title="Info">ℹ️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contact-row" data-number="+33 6 98 76 54 32" tabindex="0">
+  <div class="contact-avatar">C</div>
+  <div class="contact-main">
+    <div class="contact-name">Charles</div>
+    <div class="contact-details">
+      <div class="contact-number">+33 6 98 76 54 32</div>
+      <div class="contact-actions">
+        <button class="action-btn action-call" title="Call">📞</button>
+        <button class="action-btn action-msg" title="Message">💬</button>
+        <button class="action-btn action-info" title="Info">ℹ️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contact-row" data-number="+34 612 89 40 11" tabindex="0">
+  <div class="contact-avatar">A</div>
+  <div class="contact-main">
+    <div class="contact-name">Nii-chan's Assistant</div>
+    <div class="contact-details">
+      <div class="contact-number">+34 612 89 40 11</div>
+      <div class="contact-actions">
+        <button class="action-btn action-call" title="Call">📞</button>
+        <button class="action-btn action-msg" title="Message">💬</button>
+        <button class="action-btn action-info" title="Info">ℹ️</button>
+      </div>
+    </div>
+  </div>
+</div>

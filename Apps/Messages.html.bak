@@ -1,0 +1,53 @@
+<div class="message-item">
+  <div class="avatar" style="background-image: url('')">SN</div>
+  <div class="message-main">
+    <div class="message-name">Shitty Aniki</div>
+    <div class="message-snippet">You: I hate you!</div>
+  </div>
+  <div class="message-meta"><div class="message-date">Fri</div></div>
+</div>
+
+<div class="message-item">
+  <div class="avatar">M</div>
+  <div class="message-main">
+    <div class="message-name">Mom</div>
+    <div class="message-snippet">Get home safe, darling!</div>
+  </div>
+  <div class="message-meta"><div class="message-date">Fri</div></div>
+</div>
+
+<div class="message-item">
+  <div class="avatar">D</div>
+  <div class="message-main">
+    <div class="message-name">Dad</div>
+    <div class="message-snippet">See you in a few weeks, Rin</div>
+  </div>
+  <div class="message-meta"><div class="message-date">Wed</div></div>
+</div>
+
+<div class="message-item">
+  <div class="avatar">IY</div>
+  <div class="message-main">
+    <div class="message-name">Isagi Yoichi</div>
+    <div class="message-snippet">You: Shut up</div>
+  </div>
+  <div class="message-meta"><div class="message-date">Mon</div></div>
+</div>
+
+<div class="message-item">
+  <div class="avatar">SR</div>
+  <div class="message-main">
+    <div class="message-name">Shidou Ryusei</div>
+    <div class="message-snippet">You: I'm not interested</div>
+  </div>
+  <div class="message-meta"><div class="message-date">Mon</div><div class="unread-badge">2</div></div>
+</div>
+
+<div class="message-item">
+  <div class="avatar">MAT</div>
+  <div class="message-main">
+    <div class="message-name">Miss Anri Teieri</div>
+    <div class="message-snippet">Please get here before 5 PM. Thank you!</div>
+  </div>
+  <div class="message-meta"><div class="message-date">Mon</div></div>
+</div>

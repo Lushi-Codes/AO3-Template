@@ -242,6 +242,25 @@
       margin-bottom: 4px;
     }
 
+    /* Messages / Conversation styles */
+    .message-list .message-item { cursor: pointer; }
+        .notes-list { display:flex; flex-direction:column; gap:10px; }
+        .conversation-container { display:none; flex:1; min-height:0; flex-direction:column; }
+        .message-list { flex:1; min-height:0; overflow-y:auto; }
+        .conversation-scroll { flex:1; min-height:0; overflow-y:auto; padding-bottom: 12px; }
+        .conv-header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding-bottom:10px; border-bottom:1px solid rgba(0,168,150,0.2); margin-bottom:12px; }
+        .conv-back { border:none; background: rgba(0,168,150,0.12); color:#dff; border-radius:12px; padding:8px 12px; cursor:pointer; }
+        .conv-title { font-weight:700; color:#fff; }
+        .conv-input-row { display:flex; gap:10px; align-items:center; padding-top:12px; }
+        .conv-input { flex:1; min-width:0; padding:12px 14px; border-radius:999px; border:1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.05); color:#fff; }
+        .conv-input::placeholder { color: rgba(255,255,255,0.6); }
+        .conv-send { padding:12px 16px; border:none; border-radius:999px; background:#00a896; color:#081014; font-weight:700; cursor:pointer; }
+        .conv-bubble { max-width: 85%; padding: 18px; border-radius: 18px; margin: 8px 0; display: inline-block; position: relative; clear: both; }
+        .conv-bubble.them { background: #0f1315; color: #e6e6e6; border-radius: 16px; float: left; border: 1px solid rgba(255,255,255,0.02); }
+        .conv-bubble.me { background: #4b628a; color: #fff; border-radius: 18px; float: right; }
+        .conv-text { font-size: 1rem; line-height: 1.4; }
+        .conv-time { font-size: 0.65rem; color: rgba(255,255,255,0.6); margin-top:6px; text-align:right; }
+
     /* --- Lock Screen (dark with turquoise accents) --- */
     .lock-screen {
       position: absolute;
@@ -332,6 +351,22 @@
     .clock-bands .bottom-band { top: calc(100% - 140px); }
 
     .lock-center { display:flex; flex-direction:column; align-items:center; gap:12px; z-index:255; }
+
+/* Emergency unlock button styling */
+.unlock-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(107,209,196,0.95);
+  color: #00231f;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 400;
+}
+.unlock-btn:active { transform: scale(0.98); }
 
     .analog-clock {
       width: 260px;
@@ -458,7 +493,7 @@
 }
 
 /* Messages styling */
-.messages-body { padding: 10px 6px; }
+.messages-body { padding: 10px 6px; display:flex; flex-direction:column; gap:12px; }
 .message-list { display:flex; flex-direction:column; gap:10px; }
 .message-item { display:flex; align-items:center; gap:12px; padding:12px; background: rgba(0,0,0,0.6); border-radius: 12px; }
 .message-item .avatar { width:44px; height:44px; border-radius:50%; background:#374151; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; }
@@ -485,13 +520,61 @@
 .recents-group { color:#94a3b8; font-weight:700; margin-top:6px; }
 .recent-item { background: rgba(0,0,0,0.6); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; }
 .recent-name { font-weight:800; color:#fff; }
-.recent-sub { color:#9ca3af; font-size:0.85rem; }
+.recent-meta, .recent-sub { color:#9ca3af; font-size:0.85rem; }
 .recent-time { color:#9ca3af; font-weight:700; }
 
-.contacts-list { display:flex; flex-direction:column; gap:10px; }
-.contact-row { display:flex; align-items:center; gap:12px; background: rgba(0,0,0,0.6); padding:12px; border-radius:18px; }
-.contact-avatar { width:44px; height:44px; border-radius:50%; background:#374151; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; }
-.contact-name { font-weight:800; color:#fff; }
+.contacts-list { display:flex; flex-direction:column; gap:14px; padding:6px 2px; }
+
+/* contact row (collapsed) — pill look like screenshot */
+.contact-row {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background: rgba(20,20,24,0.6);
+  padding:14px 16px;
+  border-radius:28px;
+  transition: background 160ms ease, transform 120ms ease;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+.contact-row:active { transform: scale(0.996); }
+
+/* avatar circle with subtle ring */
+.contact-avatar {
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:#1f2937;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-weight:700;
+  font-size:1rem;
+  border: 2px solid rgba(255,255,255,0.04);
+}
+
+.contact-main { flex:1; min-width:0; display:flex; flex-direction:column; }
+.contact-name { font-weight:700; color:#fff; font-size:1.05rem; margin-bottom:6px; }
+
+/* collapsed detail (hidden until expanded) */
+.contact-details { display:none; margin-top:6px; }
+.contact-number { color:#d1f7ee; font-weight:800; margin-bottom:8px; font-size:0.95rem; }
+
+/* action buttons shown when expanded */
+.contact-actions { display:flex; gap:12px; }
+.action-btn { background: #0b1113; color:#fff; border:none; padding:8px 12px; border-radius:12px; cursor:pointer; font-size:1rem; }
+.action-btn:active { transform: translateY(1px); }
+
+/* expanded state (shows details inline like the screenshot) */
+.contact-row.expanded { background: rgba(18,18,20,0.75); padding:16px; }
+.contact-row.expanded { flex-direction: column; align-items: flex-start; }
+.contact-row.expanded .contact-details { display:block; }
+.contact-row + .contact-row { margin-top:10px; }
+
+/* small loading placeholder */
+.loading { color:#9ca3af; padding:8px 12px; }
+
 
 /* Soft keys at bottom */
 .soft-keys { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); display:flex; gap:28px; z-index:60; }

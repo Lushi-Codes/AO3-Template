@@ -1,0 +1,14 @@
+﻿<div class="gallery-card">
+  <img src="images/photo1.jpg" alt="Photo 1">
+  <div class="gallery-caption">Summer days</div>
+</div>
+
+<div class="gallery-card">
+  <img src="images/photo2.jpg" alt="Photo 2">
+  <div class="gallery-caption">City lights</div>
+</div>
+
+<div class="gallery-card">
+  <img src="images/photo3.jpg" alt="Photo 3">
+  <div class="gallery-caption">Mountains</div>
+</div>

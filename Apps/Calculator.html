@@ -1,0 +1,114 @@
+<style>
+.calculator{color:#fff;padding:8px}
+.calc-screen{height:150px;border-radius:6px;margin-bottom:12px;display:flex;align-items:flex-end;justify-content:flex-end;padding:18px}
+.calc-display{background:transparent;border:0;color:#fff;font-size:30px;text-align:right;width:100%;outline:none}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.btn{border:0;border-radius:40px;height:64px;font-size:22px;color:#fff;background:#2b3334;cursor:pointer}
+.btn.op{background:#0f6b45}
+.btn.func{background:#0f6b45}
+.btn.eq{background:#6fe6a6;color:#063}
+.btn.wide{grid-column:4/5;height:72px;border-radius:36px}
+.small{height:56px;border-radius:28px}
+</style>
+
+<div class="calculator">
+  <div class="calc-screen"><input class="calc-display" readonly placeholder="0" /></div>
+  <div class="calc-grid">
+    <button class="btn func" data-action="clear">AC</button>
+    <button class="btn func" data-action="back">⌫</button>
+    <button class="btn func" data-action="neg">+/-</button>
+    <button class="btn op" data-op="/">÷</button>
+
+    <button class="btn" data-digit="7">7</button>
+    <button class="btn" data-digit="8">8</button>
+    <button class="btn" data-digit="9">9</button>
+    <button class="btn op" data-op="*">×</button>
+
+    <button class="btn" data-digit="4">4</button>
+    <button class="btn" data-digit="5">5</button>
+    <button class="btn" data-digit="6">6</button>
+    <button class="btn op" data-op="-">−</button>
+
+    <button class="btn" data-digit="1">1</button>
+    <button class="btn" data-digit="2">2</button>
+    <button class="btn" data-digit="3">3</button>
+    <button class="btn op" data-op="+">+</button>
+
+    <button class="btn" data-digit="%">%</button>
+    <button class="btn" data-digit="0">0</button>
+    <button class="btn" data-digit=".">.</button>
+    <button class="btn eq" data-action="equals">=</button>
+  </div>
+</div>
+
+<script>
+// Initialization moved to script.js - initializeCalculator()
+/*
+(function(){
+  function initCalc(container){
+    if(container.hasAttribute('data-calc-initialized')) return;
+    container.setAttribute('data-calc-initialized', 'true');
+
+    try{
+      const display = container.querySelector('.calc-display');
+      const grid = container.querySelector('.calc-grid');
+      if(!display || !grid) return;
+      let expr = '';
+
+      function set(val){ display.value = String(val); }
+      function append(v){ expr += String(v); set(expr); }
+      function clearAll(){ expr = ''; set('0'); }
+      function back(){ expr = expr.slice(0,-1); set(expr || '0'); }
+      function toggleNeg(){ if(!expr) return; if(expr.charAt(0)==='-') expr = expr.slice(1); else expr = '-' + expr; set(expr); }
+      function percent(){ try{ const v = parseFloat(expr || '0'); expr = String(v/100); set(expr); }catch(e){} }
+      function evaluate(){
+        try{
+          const s = expr.replace(/×/g,'*').replace(/÷/g,'/');
+          const safe = s.replace(/[^0-9+\-*(). %]/g,'');
+          const fn = new Function('return ' + safe);
+          const res = fn(); expr = (res===undefined||res===null)?'':String(res); set(expr);
+        }catch(e){ alert('Invalid expression'); }
+      }
+
+      // Use event delegation on grid
+      grid.addEventListener('click', (e)=>{
+        const btn = e.target.closest('button');
+        if(!btn) return;
+
+        const d = btn.dataset.digit;
+        const op = btn.dataset.op;
+        const action = btn.dataset.action;
+
+        if(d) {
+          if(d==='%') percent();
+          else append(d);
+        } else if(op) {
+          append(' ' + op + ' ');
+        } else if(action) {
+          if(action==='clear') clearAll();
+          else if(action==='back') back();
+          else if(action==='neg') toggleNeg();
+          else if(action==='equals') evaluate();
+        }
+      });
+
+      // keyboard
+      container.addEventListener('keydown', (e)=>{
+        if(/^[0-9]$/.test(e.key)) append(e.key);
+        else if('+-*'.includes(e.key)) append(' '+e.key+' ');
+        else if(e.key==='Enter') evaluate();
+        else if(e.key==='Backspace') back();
+        else if(e.key==='Escape') clearAll();
+        else if(e.key==='.') append('.');
+      });
+      if(!container.hasAttribute('tabindex')) container.setAttribute('tabindex','0');
+
+      clearAll();
+    }catch(e){console.error(e);} }
+
+  document.addEventListener('DOMContentLoaded', ()=>{ const c = document.querySelector('#app-calculator .screen-body') || document.querySelector('.calculator'); if(c) initCalc(c); });
+  const mo = new MutationObserver(m=>{ for(const r of m){ for(const n of r.addedNodes){ if(n.nodeType===1){ let calc = n.classList && n.classList.contains('calculator') ? n : n.querySelector && n.querySelector('.calculator'); if(calc) { initCalc(calc); return; } } } } });
+  mo.observe(document.body,{childList:true,subtree:true});
+})();
+*/
+</script>

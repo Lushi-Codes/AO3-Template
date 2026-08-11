@@ -1,0 +1,419 @@
+<style>
+.calendar-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+  color: #fff;
+}
+
+.cal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #333;
+  gap: 8px;
+}
+
+.cal-month {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  flex: 1;
+  cursor: pointer;
+}
+
+.cal-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.cal-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.cal-nav-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.cal-today-btn {
+  background: #222;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.cal-grid-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 8px;
+}
+
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  padding: 4px;
+}
+
+.cal-weekday {
+  text-align: center;
+  font-size: 12px;
+  color: #aaa;
+  font-weight: 500;
+  padding: 8px 0;
+}
+
+.cal-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  padding: 4px;
+}
+
+.cal-day {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #aaa;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  font-size: 11px;
+  min-height: 36px;
+}
+
+.cal-day.other-month {
+  color: #555;
+}
+
+.cal-day.current-month {
+  color: #fff;
+}
+
+.cal-day.today {
+  border: 2px solid #0084ff;
+  background: rgba(0, 132, 255, 0.1);
+  color: #fff;
+}
+
+.cal-day.selected {
+  background: #0084ff;
+  color: #fff;
+}
+
+.cal-day-num {
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.cal-day-events {
+  font-size: 8px;
+  color: #4a4;
+  margin-top: auto;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 20px;
+}
+
+.cal-day:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cal-add-btn {
+  background: #333;
+  border: 1px solid #444;
+  border-radius: 20px;
+  color: #fff;
+  padding: 10px 16px;
+  margin: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.cal-add-btn:hover {
+  background: #444;
+}
+
+.cal-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.cal-modal.active {
+  display: flex;
+}
+
+.cal-modal-content {
+  background: #222;
+  border-radius: 12px;
+  padding: 20px;
+  width: 90%;
+  max-width: 300px;
+  color: #fff;
+}
+
+.cal-modal-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.cal-form-group {
+  margin-bottom: 12px;
+}
+
+.cal-form-group label {
+  display: block;
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 4px;
+}
+
+.cal-form-group input,
+.cal-form-group textarea {
+  width: 100%;
+  background: #111;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #fff;
+  padding: 8px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.cal-form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.cal-form-actions button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.cal-btn-primary {
+  background: #0084ff;
+  color: #fff;
+}
+
+.cal-btn-secondary {
+  background: #333;
+  color: #aaa;
+}
+
+.cal-btn-delete {
+  background: #cc3333;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.cal-day-view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.cal-day-view.active {
+  display: flex;
+}
+
+.cal-day-view-content {
+  background: #1a1a1a;
+  border-radius: 16px 16px 0 0;
+  padding: 20px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  color: #fff;
+}
+
+.cal-day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #333;
+}
+
+.cal-day-title {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.cal-day-subtitle {
+  font-size: 14px;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+.cal-day-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.cal-event-card {
+  background: #0f6b45;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  position: relative;
+}
+
+.cal-event-card.permanent {
+  background: #1a3a28;
+  cursor: default;
+}
+
+.cal-event-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.cal-event-time {
+  font-size: 12px;
+  color: #bbb;
+}
+
+.cal-event-description {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 6px;
+}
+
+.cal-event-icon {
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+</style>
+
+<div class="calendar-app">
+  <div class="cal-header">
+    <button class="cal-nav-btn" id="cal-prev-month">‹</button>
+    <div class="cal-month" id="cal-month">AUG</div>
+    <button class="cal-nav-btn" id="cal-next-month">›</button>
+    <button class="cal-today-btn" id="cal-today">Today</button>
+  </div>
+
+  <div class="cal-grid-container">
+    <div class="cal-weekdays">
+      <div class="cal-weekday">S</div>
+      <div class="cal-weekday">M</div>
+      <div class="cal-weekday">T</div>
+      <div class="cal-weekday">W</div>
+      <div class="cal-weekday">T</div>
+      <div class="cal-weekday">F</div>
+      <div class="cal-weekday">S</div>
+    </div>
+    <div class="cal-days-grid" id="cal-days"></div>
+  </div>
+
+  <button class="cal-add-btn" id="cal-add-event">
+    <span>Add on <span id="cal-add-date">Aug 11</span></span>
+    <span>+</span>
+  </button>
+</div>
+
+<!-- Day View Modal -->
+<div class="cal-day-view" id="cal-day-view">
+  <div class="cal-day-view-content">
+    <div class="cal-day-header">
+      <div>
+        <div class="cal-day-title" id="day-view-date">21</div>
+        <div class="cal-day-subtitle" id="day-view-dayname">Friday</div>
+      </div>
+      <button class="cal-day-close" id="day-view-close">✕</button>
+    </div>
+    <div id="day-events-container"></div>
+    <button class="cal-add-btn" id="day-add-event" style="margin-top: 16px;">
+      <span>Add event</span>
+      <span>+</span>
+    </button>
+  </div>
+</div>
+
+<!-- Event Modal -->
+<div class="cal-modal" id="cal-modal">
+  <div class="cal-modal-content">
+    <div class="cal-modal-title" id="modal-title">Add Event</div>
+    <button class="cal-btn-delete" id="btn-delete-event" style="display:none;" title="Delete event">🗑️</button>
+    <div class="cal-form-group">
+      <label>Event Title</label>
+      <input type="text" id="event-title" placeholder="Event name" />
+    </div>
+    <div class="cal-form-group">
+      <label>Time (optional)</label>
+      <input type="time" id="event-time" />
+    </div>
+    <div class="cal-form-group">
+      <label>Description (optional)</label>
+      <textarea id="event-desc" placeholder="Add notes..." rows="3"></textarea>
+    </div>
+    <div class="cal-form-actions">
+      <button class="cal-btn-primary" id="btn-save-event">Save</button>
+      <button class="cal-btn-secondary" id="btn-cancel-event">Cancel</button>
+    </div>
+    
+  </div>
+</div>

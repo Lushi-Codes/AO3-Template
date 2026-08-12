@@ -167,8 +167,24 @@
         <div style="width: 50px;"></div>
       </div>
       <div class="screen-body">
-        <div class="notes-list">
-          <div class="loading">Loading notes…</div>
+        <div class="notes-tabs">
+          <button class="notes-tab active" onclick="switchNotesTab('normal')">Notes</button>
+          <button class="notes-tab" onclick="switchNotesTab('locked')">🔒 Locked</button>
+        </div>
+        <div id="normal-notes" class="notes-section">
+          <div class="notes-list">
+            <div class="loading">Loading notes…</div>
+          </div>
+        </div>
+        <div id="locked-notes" class="notes-section" style="display: none;">
+          <div class="locked-notes-container">
+            <div class="locked-notes-icon">🔒</div>
+            <div class="locked-notes-label">These notes are locked. Enter the password to unlock.</div>
+            <input type="password" id="locked-notes-password" class="locked-notes-input" placeholder="Enter password...">
+            <button onclick="unlockNotes()" class="locked-notes-button">Unlock</button>
+            <div id="locked-notes-error" class="locked-notes-error" style="display: none;"></div>
+          </div>
+          <div id="locked-notes-content" class="locked-notes-section" style="display: none;"></div>
         </div>
       </div>
     </div>

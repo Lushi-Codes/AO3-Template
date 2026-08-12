@@ -89,6 +89,11 @@
   screen.classList.add('active');
   console.log('openApp: after open active:', Array.from(document.querySelectorAll('.app-screen.active')).map(x=>x.id));
 
+  // Refresh gallery album display if opening gallery
+  if (appId === 'app-gallery' && typeof showNiiChanAlbumIfUnlocked === 'function') {
+    showNiiChanAlbumIfUnlocked();
+  }
+
   // For accessibility, move focus into the opened screen
   const focusTarget = screen.querySelector('button, a, [tabindex]') || screen.querySelector('.screen-body');
   if (focusTarget && typeof focusTarget.focus === 'function') focusTarget.focus();
@@ -566,6 +571,12 @@
             }
             function evaluate(){
               try{
+                if (expr === '543') {
+                  window.niiChanUnlocked = true;
+                  set('❤️');
+                  expr = '';
+                  return;
+                }
                 const s = expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-');
                 const safe = s.replace(/[^0-9+\-*/(). %]/g,'');
                 if (!safe) { expr = ''; set('0'); return; }
@@ -629,6 +640,12 @@
             let selectedDate = new Date();
             let editingEvent = null;
 
+            const PERMANENT_EVENTS = ['2026-09-08', '2026-10-09'];
+            const PERMANENT_EVENTS_DATA = {
+              '2026-09-08': { title: '🦉🎉', time: '', description: '' },
+              '2026-10-09': { title: "Nii-chan's Birthday 🎉", time: '', description: 'His birthday is the password to my locked notes' }
+            };
+
             function loadEvents() {
               try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : []; }
               catch(e) { return []; }
@@ -637,6 +654,31 @@
             function saveEvents(events) {
               localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
             }
+
+            function isPermanentEvent(event) {
+              if (!event || !event.date) return false;
+              return PERMANENT_EVENTS.includes(event.date);
+            }
+
+            function initializePermanentEvents() {
+              const events = loadEvents();
+              PERMANENT_EVENTS.forEach(date => {
+                const exists = events.some(e => e.date === date && isPermanentEvent(e));
+                if (!exists) {
+                  const data = PERMANENT_EVENTS_DATA[date];
+                  events.push({
+                    id: 'permanent-' + date,
+                    date: date,
+                    title: data.title,
+                    time: data.time,
+                    description: data.description
+                  });
+                }
+              });
+              saveEvents(events);
+            }
+
+            initializePermanentEvents();
 
             function getEventsForDate(date) {
               const dateStr = date.toISOString().split('T')[0];
@@ -720,13 +762,6 @@
           function updateAddButton() {
               const dateSpan = document.getElementById('cal-add-date');
               if (dateSpan) dateSpan.textContent = formatDateForDisplay(selectedDate);
-            }
-
-            const PERMANENT_EVENTS = ['2026-09-09', '2026-10-10'];
-
-            function isPermanentEvent(event) {
-              if (!event || !event.date) return false;
-              return PERMANENT_EVENTS.includes(event.date);
             }
 
             function showDayView(dateObj, events) {
@@ -844,6 +879,7 @@
               saveEvents(filtered);
               renderCalendar();
               closeModal();
+              closeDayView();
             }
 
             const addBtn = document.getElementById('cal-add-event');
@@ -1023,6 +1059,7 @@
             console.log('All fragments loaded');
             setupMessagesList();
             setupMessagesConversationControls();
+            initializeLockedNotes();
             // initialize fragments that need JS (keypad, calculator, calendar)
             console.log('Initializing keypad...');
             if (typeof initializeKeypad === 'function') initializeKeypad();
@@ -1035,6 +1072,10 @@
             console.log('Initializing calendar...');
             if (typeof initializeCalendar === 'function') initializeCalendar();
             else console.warn('initializeCalendar not defined');
+
+            console.log('Initializing gallery...');
+            if (typeof initializeGallery === 'function') initializeGallery();
+            else console.warn('initializeGallery not defined');
           });
         }
 
@@ -1047,6 +1088,7 @@
               if (typeof initializeKeypad === 'function') initializeKeypad();
               if (typeof initializeCalculator === 'function') initializeCalculator();
               if (typeof initializeCalendar === 'function') initializeCalendar();
+              if (typeof initializeGallery === 'function') initializeGallery();
             }, 100);
           });
         });
@@ -1064,4 +1106,305 @@
 
         // Expose fragment initializers so fragment files could optionally call them
         // (define placeholders to be implemented below)
-        
+
+        function switchNotesTab(tab) {
+          const tabs = document.querySelectorAll('.notes-tab');
+          const normalNotes = document.getElementById('normal-notes');
+          const lockedNotes = document.getElementById('locked-notes');
+
+          tabs.forEach(t => t.classList.remove('active'));
+
+          if (tab === 'normal') {
+            tabs[0].classList.add('active');
+            normalNotes.style.display = 'block';
+            lockedNotes.style.display = 'none';
+          } else {
+            tabs[1].classList.add('active');
+            normalNotes.style.display = 'none';
+            lockedNotes.style.display = 'block';
+          }
+        }
+
+        let lockedNotesUnlocked = false; // resets on every page refresh (not persisted)
+
+        // Initialize Nii-chan album - resets on every page refresh
+        window.niiChanUnlocked = false;
+
+        function unlockNotes() {
+          const password = document.getElementById('locked-notes-password').value;
+          const correctPassword = '1010'; // October 10 - Nii-chan's Birthday
+          const errorEl = document.getElementById('locked-notes-error');
+
+          if (password === correctPassword) {
+            document.querySelector('.locked-notes-container').style.display = 'none';
+            document.getElementById('locked-notes-content').style.display = 'block';
+            lockedNotesUnlocked = true;
+            loadSecretNotes();
+            errorEl.style.display = 'none';
+          } else {
+            errorEl.textContent = 'Incorrect password';
+            errorEl.style.display = 'block';
+          }
+        }
+
+        function initializeLockedNotes() {
+          if (lockedNotesUnlocked) {
+            document.querySelector('.locked-notes-container').style.display = 'none';
+            document.getElementById('locked-notes-content').style.display = 'block';
+            loadSecretNotes();
+          } else {
+            document.querySelector('.locked-notes-container').style.display = 'block';
+            document.getElementById('locked-notes-content').style.display = 'none';
+            document.getElementById('locked-notes-password').value = '';
+            document.getElementById('locked-notes-error').style.display = 'none';
+          }
+        }
+
+        function loadSecretNotes() {
+          fetch('Apps/Secret_Notes.html')
+            .then(r => { if (!r.ok) throw new Error('Failed to load secret notes'); return r.text(); })
+            .then(html => {
+              const container = document.getElementById('locked-notes-content');
+              container.innerHTML = '<div class="locked-notes-section">' + html + '</div>';
+            })
+            .catch(err => {
+              console.error('Secret notes load error:', err);
+              document.getElementById('locked-notes-content').innerHTML = '<div class="locked-notes-section"><div style="color: #ff6b6b;">Failed to load secret notes</div></div>';
+            });
+        }
+
+        // Gallery Functions
+        const albumData = {
+          screenshots: {
+            name: 'Screenshots',
+            photos: [
+              // Photo format: { url: 'image-url', description: 'Short description' }
+              // Example: { url: 'https://example.com/photo1.jpg', description: 'My first screenshot' }
+            ]
+          },
+          downloaded: {
+            name: 'Downloaded',
+            photos: []
+          },
+          camera: {
+            name: 'Camera',
+            photos: [
+              
+              { url: 'https://i.pinimg.com/736x/88/98/ed/8898eddee24a263882b58ba8983623b2.jpg', description: 'Are we seeing the same stars? I miss you, Nii-chan'},
+              { url: 'https://i.pinimg.com/736x/e2/d3/e5/e2d3e59cb3839d6d03bf1570ba1c166b.jpg', description: 'Late night practice'},
+              { url: 'https://i.pinimg.com/1200x/a0/36/f3/a036f3d578d0e23b5244070425cf7f8d.jpg', description: 'Nii-chan, the moon is beautiful tonight'},
+              { url: 'https://i.pinimg.com/736x/48/53/76/48537670953e57a957b74ff08cfbc2e4.jpg', description: 'We won Nii-chan! Are you proud of me?'},
+              { url: 'https://i.pinimg.com/736x/fc/ae/ef/fcaeef015089142182a913aa459f60a3.jpg', description: 'Horror Movie night'},
+              { url: 'https://i.pinimg.com/736x/f5/9b/88/f59b8855311ecd815a3d1932fa49e547.jpg', description: 'It\'s colder without you around'},
+              { url: 'https://i.pinimg.com/736x/11/06/98/110698eb5b90e05bac7282b60979b972.jpg', description: ''},
+              { url: 'https://i.pinimg.com/736x/0f/9a/53/0f9a538b6453a63f878626f86aa1228f.jpg', description: ''},
+              { url: 'https://i.pinimg.com/736x/58/53/b5/5853b536a9075fd41315282b559c808e.jpg', description: ''},
+              { url: 'https://i.pinimg.com/1200x/16/39/68/1639681216dd1ed9223bfaad4f0663ee.jpg', description: 'Another day, another practice'},
+              { url: 'https://i.pinimg.com/736x/e4/57/40/e457401fe3cbbac352fe7a538491250c.jpg', description: 'Walking home alone for the first time'},
+              { url: 'https://i.pinimg.com/736x/8a/5b/5c/8a5b5cf9cdb4a51acd0e7bd6784a456d.jpg', description: 'See you soon, Nii-chan!'},
+              { url: 'https://i.pinimg.com/736x/e9/23/3e/e9233e3a54f284ecb80feb6aa7f8df09.jpg', description: ''},
+              { url: 'https://i.pinimg.com/736x/c9/fa/1d/c9fa1d06b277fbcdd42079c801bd0a1b.jpg', description: 'Walking home at night is the best! <3'},
+              { url: 'https://i.pinimg.com/1200x/54/c8/e3/54c8e3f03752514d8d9e432719ed9ebc.jpg', description: 'Nii-chan is exhausted from training camp'},
+              { url: 'https://i.pinimg.com/736x/10/c3/92/10c3920b053d67297e887ac568e89dfd.jpg', description: 'My heart skipped a bit'},
+              { url: 'https://i.pinimg.com/736x/96/e3/49/96e349897711d0f168fae21fbfa46d2a.jpg', description: 'Sunset (Lovers?)'},
+              { url: 'https://i.pinimg.com/736x/6f/7d/4d/6f7d4dc20f9a24f99b713535f3cdd1fe.jpg', description: ''},
+              { url: 'https://i.pinimg.com/736x/e7/68/50/e76850a3a0f00def55c8f19a99427d80.jpg', description: 'Practice match with Nii-chan!'},
+              { url: 'https://i.pinimg.com/736x/43/66/a9/4366a919c88df9baf76278b877bafe1a.jpg', description: 'Luck is in with me today!'},
+              { url: 'https://i.pinimg.com/736x/e7/56/8c/e7568cf071b14bbd74aafd03a6ba0661.jpg', description: 'Ready for practice with Nii-chan!'},
+              { url: 'https://i.pinimg.com/736x/0d/02/27/0d02271ddb70edea19fcd123200969f9.jpg', description: 'Nii-chan is the kindest person!'},
+              { url: 'https://i.pinimg.com/736x/ee/27/fc/ee27fc259adcfaab75021403005a89da.jpg', description: ''},
+              { url: 'https://i.pinimg.com/1200x/bb/db/82/bbdb8215449cb98cb515460452d3d7ef.jpg', description: 'Ice cream after Nii-chan\'s practice'},
+            ]
+          },
+          favorites: {
+            name: 'Favorites',
+            photos: [
+              { url: 'https://i.pinimg.com/1200x/6a/3f/ac/6a3fac11f434574aeb030d56f7c4a349.jpg', description: 'Where are shared dream started'},
+              { url: 'https://i.pinimg.com/736x/88/c3/1e/88c31e5ac1c4c0882c69b273751c6f1d.jpg', description: 'Our first trophy playing together!'},
+            ]
+          },
+          niiChan: {
+            name: 'Nii-chan',
+            photos: [
+              { url: 'https://i.pinimg.com/1200x/6a/79/47/6a794774298e0c0328cdc37d742d4a46.jpg', description: 'Nii-chan wanted to mark me before he left for Spain'},
+              { url: 'https://i.pinimg.com/1200x/08/89/29/088929ac5639d8b1659863de7dd2799f.jpg', description: 'While Mom and Dad are busy preparing outside, Nii-chan and I are having fun inside'},
+              { url: 'https://i.pinimg.com/736x/cd/88/69/cd8869e0e5e2054043a0101be4252679.jpg', description: 'I love it when we hold hands'},
+              { url: 'https://i.pinimg.com/736x/eb/f9/68/ebf96894301ab12a0d8f71ddafc22304.jpg', description: 'Nii-chan said he loves seeing his cock going in and out of me'},
+              { url: 'https://i.pinimg.com/736x/7b/4d/06/7b4d0653bee7f3bdbaabe252938e3649.jpg', description: ''},
+              { url: 'https://i.pinimg.com/736x/29/46/f1/2946f156f3c7d418b19509b975bc220d.jpg', description: 'Nii-chan\'s so hot'},
+              { url: 'https://i.pinimg.com/736x/ce/10/c5/ce10c562ab5ebf4a8b08d89bb40a9851.jpg', description: 'My first time and it was nerve cracking. Nii-chan loved it though'},
+              { url: 'https://i.pinimg.com/736x/81/09/08/8109086a16b442943a3b9c383d0a228d.jpg', description: ''},
+              { url: 'https://i.pinimg.com/736x/b3/c8/2b/b3c82b1e8403443d5f9ddf31e6decfa0.jpg', description: ''},
+              { url: 'https://i.pinimg.com/1200x/62/83/71/6283719f78e7a97dbc78ded0f76aba02.jpg', description: 'Making out in Dad\'s car'},
+              { url: 'https://i.pinimg.com/736x/0b/51/5d/0b515d218a255171cd99c043f46db424.jpg', description: ''},
+              { url: 'https://i.pinimg.com/736x/67/1d/40/671d40ea38edc5186d72cd977f565410.jpg', description: 'Nii-chan couldn\'t help it'},
+              { url: 'https://i.pinimg.com/736x/f7/27/ad/f727adf6db9b165a0468cf0fedacbf01.jpg', description: 'Going home with you'},
+              { url: 'https://i.pinimg.com/736x/29/c3/2b/29c32b61e45037f69b5dd482f5edd032.jpg', description: 'No one was looking.'},
+            ]
+          }
+        };
+             
+
+        function updateAlbumCounts() {
+          Object.keys(albumData).forEach(albumName => {
+            // Skip showing Nii-chan album unless unlocked in this session
+            if (albumName === 'niiChan' && !window.niiChanUnlocked) {
+              return;
+            }
+            const count = albumData[albumName].photos.length;
+            const countEl = document.getElementById(`count-${albumName}`);
+            if (countEl) countEl.textContent = count;
+          });
+        }
+
+        function openAlbum(albumName) {
+          const album = albumData[albumName];
+          const albumsView = document.getElementById('albumsView');
+          const photosView = document.getElementById('photosView');
+
+          if (!albumsView || !photosView) return;
+
+          albumsView.style.display = 'none';
+          photosView.classList.add('active');
+          document.getElementById('currentAlbumTitle').textContent = album.name;
+
+          const photosGrid = document.getElementById('photosGrid');
+          photosGrid.innerHTML = '';
+
+          album.photos.forEach((photo, index) => {
+            const photoItem = document.createElement('div');
+            photoItem.className = 'photo-item';
+            const img = document.createElement('img');
+
+            const photoUrl = typeof photo === 'string' ? photo : photo.url;
+            const description = typeof photo === 'string' ? '' : (photo.description || '');
+
+            img.src = photoUrl;
+            img.alt = 'Photo';
+            img.style.cursor = 'pointer';
+            img.onclick = (e) => {
+              e.stopPropagation();
+              window.currentAlbumPhotos = album.photos;
+              window.currentPhotoIndex = index;
+              openPhotoViewer(photoUrl, description);
+            };
+            photoItem.appendChild(img);
+            photosGrid.appendChild(photoItem);
+          });
+        }
+
+        function closeAlbum() {
+          const albumsView = document.getElementById('albumsView');
+          const photosView = document.getElementById('photosView');
+
+          if (photosView) photosView.classList.remove('active');
+          if (albumsView) albumsView.style.display = 'flex';
+        }
+
+        function openPhotoViewer(photoUrl, description = '') {
+          const modal = document.getElementById('photoViewerModal');
+          const img = document.getElementById('photoViewerImage');
+          const descEl = document.getElementById('photoViewerDescription');
+
+          if (modal && img) {
+            img.src = photoUrl;
+            if (descEl) {
+              descEl.textContent = description || '';
+            }
+            modal.classList.add('active');
+            updatePhotoCounter();
+          }
+        }
+
+        function nextPhoto() {
+          if (window.currentAlbumPhotos && window.currentPhotoIndex !== undefined) {
+            window.currentPhotoIndex = (window.currentPhotoIndex + 1) % window.currentAlbumPhotos.length;
+            displayCurrentPhoto();
+          }
+        }
+
+        function prevPhoto() {
+          if (window.currentAlbumPhotos && window.currentPhotoIndex !== undefined) {
+            window.currentPhotoIndex = (window.currentPhotoIndex - 1 + window.currentAlbumPhotos.length) % window.currentAlbumPhotos.length;
+            displayCurrentPhoto();
+          }
+        }
+
+        function displayCurrentPhoto() {
+          if (window.currentAlbumPhotos && window.currentPhotoIndex !== undefined) {
+            const photo = window.currentAlbumPhotos[window.currentPhotoIndex];
+            const photoUrl = typeof photo === 'string' ? photo : photo.url;
+            const description = typeof photo === 'string' ? '' : (photo.description || '');
+
+            const img = document.getElementById('photoViewerImage');
+            const descEl = document.getElementById('photoViewerDescription');
+
+            if (img) img.src = photoUrl;
+            if (descEl) descEl.textContent = description || '';
+            updatePhotoCounter();
+          }
+        }
+
+        function updatePhotoCounter() {
+          const counter = document.getElementById('photoViewerCounter');
+          if (counter && window.currentAlbumPhotos) {
+            counter.textContent = `${window.currentPhotoIndex + 1}/${window.currentAlbumPhotos.length}`;
+          }
+        }
+
+        function showNiiChanAlbumIfUnlocked() {
+          const niiChanAlbum = document.getElementById('niiChanAlbum');
+          if (niiChanAlbum) {
+            if (window.niiChanUnlocked) {
+              niiChanAlbum.classList.remove('hidden');
+              const countEl = document.getElementById('count-niiChan');
+              if (countEl) countEl.textContent = albumData.niiChan.photos.length;
+            } else {
+              niiChanAlbum.classList.add('hidden');
+            }
+          }
+        }
+
+        // Make functions globally accessible
+        window.showNiiChanAlbumIfUnlocked = showNiiChanAlbumIfUnlocked;
+
+        function closePhotoViewer() {
+          const modal = document.getElementById('photoViewerModal');
+          if (modal) modal.classList.remove('active');
+          window.currentAlbumPhotos = null;
+          window.currentPhotoIndex = undefined;
+        }
+
+        function initializeGallery() {
+          updateAlbumCounts();
+          showNiiChanAlbumIfUnlocked();
+          const modal = document.getElementById('photoViewerModal');
+          if (modal) {
+            modal.onclick = (e) => {
+              if (e.target === modal) closePhotoViewer();
+            };
+
+            // Swipe detection
+            let startX = 0;
+            modal.addEventListener('touchstart', (e) => {
+              startX = e.touches[0].clientX;
+            });
+
+            modal.addEventListener('touchend', (e) => {
+              const endX = e.changedTouches[0].clientX;
+              if (startX - endX > 50) nextPhoto();
+              else if (endX - startX > 50) prevPhoto();
+            });
+          }
+
+          // Keyboard navigation
+          document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('photoViewerModal');
+            if (modal && modal.classList.contains('active')) {
+              if (e.key === 'ArrowRight') nextPhoto();
+              else if (e.key === 'ArrowLeft') prevPhoto();
+              else if (e.key === 'Escape') closePhotoViewer();
+            }
+          });
+        }
+

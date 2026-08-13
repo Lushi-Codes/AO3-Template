@@ -94,12 +94,24 @@
     showSecretAlbumsIfUnlocked();
   }
 
+  // Initialize camera only when opening camera app
+  if (appId === 'app-camera' && typeof initializeCamera === 'function') {
+    initializeCamera();
+  }
+
   // For accessibility, move focus into the opened screen
   const focusTarget = screen.querySelector('button, a, [tabindex]') || screen.querySelector('.screen-body');
   if (focusTarget && typeof focusTarget.focus === 'function') focusTarget.focus();
 }
 
         function closeApp(appId) {
+          // Close camera if closing camera app
+          if (appId === 'app-camera') {
+            if (typeof closeCameraStream === 'function') {
+              closeCameraStream();
+            }
+          }
+
           const el = document.getElementById(appId);
           if (el) {
             el.classList.remove('active');
@@ -1060,6 +1072,7 @@
             { file: 'Apps/Keypad.html', selector: '#phoneKeypad' },
             { file: 'Apps/Calculator.html', selector: '#app-calculator .screen-body' },
             { file: 'Apps/Calendar.html', selector: '#app-calendar .screen-body' },
+            { file: 'Apps/Camera.html', selector: '#app-camera .screen-body' },
           ];
 
           const promises = mappings.map(map => loadFragmentTo(map.selector, map.file));
@@ -1085,6 +1098,14 @@
             console.log('Initializing gallery...');
             if (typeof initializeGallery === 'function') initializeGallery();
             else console.warn('initializeGallery not defined');
+
+            console.log('Initializing phone contacts...');
+            if (typeof initializePhoneContacts === 'function') initializePhoneContacts();
+            else console.warn('initializePhoneContacts not defined');
+
+            console.log('Initializing phone recents...');
+            if (typeof initializeRecents === 'function') initializeRecents();
+            else console.warn('initializeRecents not defined');
           });
         }
 
@@ -1656,3 +1677,156 @@
         setTimeout(() => {
           lockDownApp();
         }, 3000);
+
+        // ==================== PHONE APP ====================
+        const phoneContacts = [
+          { name: 'Shitty Aniki', number: '+81 90-1102-8841', avatar: 'S' },
+          { name: 'Mom', number: '+81 90-3312-0094', avatar: 'M' },
+          { name: 'Dad', number: '+81 90-3312-0095', avatar: 'D' },
+          { name: 'Isagi Yoichi', number: '+81 80-4419-2018', avatar: 'IY' },
+          { name: 'Bachira Meguru', number: '+81 80-8821-3091', avatar: 'BM' },
+          { name: 'Miss Anri Teieri', number: '+81 30-5510-9923', avatar: 'AT' },
+          { name: 'Shidou Ryusei', number: '+81 80-1234-5678', avatar: 'SR' }
+        ];
+
+        function initializePhoneContacts() {
+          const contactsContainer = document.getElementById('phoneContacts');
+          if (!contactsContainer) return;
+
+          contactsContainer.innerHTML = '<div style="padding: 12px;">';
+          phoneContacts.forEach(contact => {
+            const contactEl = document.createElement('div');
+            contactEl.className = 'contact-row';
+            contactEl.style.cssText = 'padding: 12px; border-bottom: 1px solid #333; cursor: pointer; display: flex; align-items: center; gap: 12px;';
+            contactEl.innerHTML = `
+              <div style="width: 40px; height: 40px; border-radius: 50%; background: #00a896; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; flex-shrink: 0;">${contact.avatar}</div>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; color: #fff;">${contact.name}</div>
+                <div style="font-size: 12px; color: #aaa;">${contact.number}</div>
+              </div>
+              <button onclick="dialNumber('${contact.number}')" style="background: none; border: none; color: #00a896; font-size: 18px; cursor: pointer;">📞</button>
+            `;
+            contactsContainer.appendChild(contactEl);
+          });
+          contactsContainer.innerHTML += '</div>';
+        }
+
+        // Make dialNumber globally available
+        window.dialNumber = function(number) {
+          const keypadInput = document.getElementById('phoneDisplay');
+          if (keypadInput) {
+            keypadInput.value = number;
+          }
+          // Switch to keypad tab
+          switchPhoneTab('keypad');
+        };
+
+        function switchPhoneTab(tab) {
+          const tabs = ['keypad', 'recents', 'contacts'];
+          tabs.forEach(t => {
+            const el = document.getElementById('phone' + (t === 'keypad' ? 'Keypad' : t === 'recents' ? 'Recents' : 'Contacts'));
+            if (el) {
+              el.style.display = t === tab ? 'block' : 'none';
+            }
+          });
+        }
+
+        // Recents call data with dates and times
+        const phoneRecents = [
+          { name: 'Mom', number: '', type: 'missed', time: '2m ago', date: 'Aug 13', fullDate: new Date(2026, 7, 13, 14, 58), callCount: 1 },
+          { name: 'Dad', number: '', type: 'outgoing', time: 'Yesterday', date: 'Aug 12', fullDate: new Date(2026, 7, 12, 10, 30), callCount: 1 },
+          { name: 'Isagi Yoichi', number: '', type: 'incoming', time: '3 days ago', date: 'Aug 10', fullDate: new Date(2026, 7, 10, 15, 45), callCount: 1 }
+        ];
+
+        function initializeRecents() {
+          const recentsContainer = document.getElementById('phoneRecents');
+          if (!recentsContainer) return;
+
+          // Group recents by date
+          const grouped = {};
+          phoneRecents.forEach(call => {
+            const dateKey = call.date;
+            if (!grouped[dateKey]) grouped[dateKey] = [];
+            grouped[dateKey].push(call);
+          });
+
+          let html = '<div style="padding: 12px; color: #fff;">';
+
+          // Render grouped by date (newest first)
+          Object.keys(grouped).reverse().forEach(dateKey => {
+            html += `<div style="color: #aaa; font-size: 12px; padding: 12px 0 8px 0; margin-top: 8px;">${dateKey}</div>`;
+
+            grouped[dateKey].forEach(call => {
+              const typeIcon = call.type === 'missed' ? '↙️' : call.type === 'outgoing' ? '↗️' : '↙️';
+              const timeFormatted = call.fullDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+              const callCountText = call.callCount > 1 ? ` (${call.callCount})` : '';
+
+              html += `
+                <div style="padding: 12px; background: #1a1a1a; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                  <div style="font-size: 18px;">${typeIcon}</div>
+                  <div style="flex: 1;">
+                    <div style="color: #fff; font-weight: 600;">${call.name}${callCountText}</div>
+                    ${call.number ? `<div style="font-size: 12px; color: #aaa;">${call.number}</div>` : ''}
+                  </div>
+                  <div style="text-align: right; font-size: 12px; color: #aaa;">${timeFormatted}</div>
+                </div>
+              `;
+            });
+          });
+
+          html += '</div>';
+          recentsContainer.innerHTML = html;
+        }
+
+        // ==================== CAMERA APP ====================
+        let cameraStream = null;
+
+        function closeCameraStream() {
+          if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+          }
+        }
+        function initializeCamera() {
+          // Camera HTML is loaded from Apps/Camera.html
+          // Just set up the camera feed
+          setupCameraFeed();
+        }
+
+        function setupCameraFeed() {
+          const video = document.getElementById('cameraVideo');
+          const cameraToggle = document.getElementById('cameraToggle');
+          const recordToggle = document.getElementById('recordToggle');
+          let isRecording = false;
+
+          if (!video) return;
+
+          // Close any existing stream first
+          closeCameraStream();
+
+          // Request camera access
+          navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user' },
+            audio: false
+          }).then(stream => {
+            cameraStream = stream;
+            video.srcObject = stream;
+            if (cameraToggle) {
+              cameraToggle.textContent = '✓ Camera On';
+              cameraToggle.style.background = '#00957f';
+            }
+          }).catch(err => {
+            console.warn('Camera access denied:', err.message);
+            if (video.parentElement) {
+              video.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #aaa; text-align: center; padding: 20px;">📷 Camera access denied<br/><small>Check browser permissions</small></div>';
+            }
+          });
+
+          if (recordToggle) {
+            recordToggle.addEventListener('click', () => {
+              isRecording = !isRecording;
+              recordToggle.textContent = isRecording ? '⏹ Stop Recording' : '⚫ Record';
+              recordToggle.style.background = isRecording ? '#cc3333' : '#00a896';
+            });
+          }
+        }

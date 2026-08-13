@@ -90,8 +90,8 @@
   console.log('openApp: after open active:', Array.from(document.querySelectorAll('.app-screen.active')).map(x=>x.id));
 
   // Refresh gallery album display if opening gallery
-  if (appId === 'app-gallery' && typeof showNiiChanAlbumIfUnlocked === 'function') {
-    showNiiChanAlbumIfUnlocked();
+  if (appId === 'app-gallery' && typeof showSecretAlbumsIfUnlocked === 'function') {
+    showSecretAlbumsIfUnlocked();
   }
 
   // For accessibility, move focus into the opened screen
@@ -577,6 +577,12 @@
                   expr = '';
                   return;
                 }
+                if (expr === '0909') {
+                  window.whatIfUnlocked = true;
+                  set('🔪');
+                  expr = '';
+                  return;
+                }
                 const s = expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-');
                 const safe = s.replace(/[^0-9+\-*/(). %]/g,'');
                 if (!safe) { expr = ''; set('0'); return; }
@@ -642,7 +648,7 @@
 
             const PERMANENT_EVENTS = ['2026-09-08', '2026-10-09'];
             const PERMANENT_EVENTS_DATA = {
-              '2026-09-08': { title: '🦉🎉', time: '', description: '' },
+              '2026-09-08': { title: '🦉🎉', time: '', description: 'Another Album Password' },
               '2026-10-09': { title: "Nii-chan's Birthday 🎉", time: '', description: 'His birthday is the password to my locked notes' }
             };
 
@@ -856,6 +862,7 @@
               const dateStr = selectedDate.toISOString().split('T')[0];
 
               if (editingEvent) {
+                if (isPermanentEvent(editingEvent)) { alert('Cannot edit permanent events'); return; }
                 const idx = events.findIndex(e => e.date === editingEvent.date && e.id === editingEvent.id);
                 if (idx >= 0) {
                   events[idx] = { id: editingEvent.id, date: dateStr, title, time, description };
@@ -872,6 +879,7 @@
 
             function deleteEvent() {
               if (!editingEvent) return;
+              if (isPermanentEvent(editingEvent)) { alert('Cannot delete permanent events'); return; }
               if (!confirm('Delete this event?')) return;
 
               const events = loadEvents();
@@ -954,7 +962,7 @@
             item.style.cursor = 'pointer';
             item.addEventListener('click', () => {
               openApp('app-messages');
-              openConversation(id, name);
+              openThreadView(id);
             });
           });
         }
@@ -1059,6 +1067,7 @@
             console.log('All fragments loaded');
             setupMessagesList();
             setupMessagesConversationControls();
+            setupThreadInput();
             initializeLockedNotes();
             // initialize fragments that need JS (keypad, calculator, calendar)
             console.log('Initializing keypad...');
@@ -1127,8 +1136,9 @@
 
         let lockedNotesUnlocked = false; // resets on every page refresh (not persisted)
 
-        // Initialize Nii-chan album - resets on every page refresh
+        // Initialize Nii-chan and What if albums - reset on every page refresh
         window.niiChanUnlocked = false;
+        window.whatIfUnlocked = false;
 
         function unlockNotes() {
           const password = document.getElementById('locked-notes-password').value;
@@ -1178,13 +1188,30 @@
           screenshots: {
             name: 'Screenshots',
             photos: [
-              // Photo format: { url: 'image-url', description: 'Short description' }
-              // Example: { url: 'https://example.com/photo1.jpg', description: 'My first screenshot' }
+              { url: 'https://i.pinimg.com/736x/83/43/3f/83433f69ab849136be158628a6cce422.jpg', description: 'Soon' },
+              { url: 'https://i.pinimg.com/736x/b8/eb/db/b8ebdb89c90b22061c271e3a0987e193.jpg', description: '' },
+              { url: 'https://i.pinimg.com/736x/98/ee/58/98ee581fdc1099dd1bd733c728ca998e.jpg', description: 'Getting better with my English' },
+              { url: 'https://i.pinimg.com/736x/27/5b/92/275b92c23b4bb74804be08f123304fdc.jpg', description: 'My classmate invited me to join their review session. No' },
+              { url: 'https://i.pinimg.com/736x/6b/93/a7/6b93a788bcde4a86eb6747f59d01921a.jpg', description: 'Practicing Doulingo Day 2' },
+              { url: 'https://i.pinimg.com/1200x/03/01/e5/0301e5ac13837c9418154e19b4d0729f.jpg', description: '' },
+              { url: './Gallery/Screenshots/Calculator.png', description: 'Hiddden Album' },
             ]
           },
           downloaded: {
             name: 'Downloaded',
-            photos: []
+            photos: [
+              { url: 'https://i.pinimg.com/1200x/d2/57/b2/d257b2639861743851ea6f6620e7af47.jpg', description: '' },
+              { url: 'https://i.pinimg.com/1200x/fc/db/19/fcdb197c1707c148fea93e47a3d1caa5.jpg', description: '' },
+              { url: 'https://i.pinimg.com/736x/40/41/18/404118cce34cdc8fb9beda7959c16d8d.jpg', description: '' },
+              { url: 'https://i.pinimg.com/736x/9d/eb/49/9deb495838b0e76a7d59aefe57b87c49.jpg', description: 'The answer might be here' },
+              { url: 'https://i.pinimg.com/736x/da/b5/b7/dab5b77f3b79bf7651bc298ab748d402.jpg', description: 'A girl in my class suggested this (Brothers) cafe with her weird lookups' },
+              { url: 'https://i.pinimg.com/736x/5b/a0/c0/5ba0c0245cbaa3f0038dce62867f047a.jpg', description: 'Nii-chan did another hat trick! So proud of him!' },
+              { url: 'https://i.pinimg.com/1200x/80/5b/05/805b05d9fe6fb07522addb5724a1cc96.jpg', description: '' },
+              { url: 'https://i.pinimg.com/736x/a6/cc/70/a6cc7002fd2c76ff7dc7859c17a7b776.jpg', description: '' },
+              { url: 'https://i.pinimg.com/736x/6a/95/e5/6a95e51b8ca99712d9435b58e056799f.jpg', description: 'Rereading' },
+              { url: 'https://i.pinimg.com/736x/35/e9/3a/35e93af0265aa4eee224080b310d70ca.jpg', description: 'Nii-chan sent me a photo of his jersey' },
+              { url: 'https://i.pinimg.com/736x/e3/bf/87/e3bf87d36a27d847409415b5b4832874.jpg', description: 'Nii-chan\'s first week' },
+            ]
           },
           camera: {
             name: 'Camera',
@@ -1194,6 +1221,8 @@
               { url: 'https://i.pinimg.com/736x/e2/d3/e5/e2d3e59cb3839d6d03bf1570ba1c166b.jpg', description: 'Late night practice'},
               { url: 'https://i.pinimg.com/1200x/a0/36/f3/a036f3d578d0e23b5244070425cf7f8d.jpg', description: 'Nii-chan, the moon is beautiful tonight'},
               { url: 'https://i.pinimg.com/736x/48/53/76/48537670953e57a957b74ff08cfbc2e4.jpg', description: 'We won Nii-chan! Are you proud of me?'},
+              { url: 'https://i.pinimg.com/1200x/3f/5f/29/3f5f296a27bebcc38ea94284c0ec7e48.jpg', description: 'Dinner. Yum yum' },
+              { url: 'https://i.pinimg.com/736x/28/0d/f7/280df7a8640f89b3bd000772232d0e23.jpg', description: 'Art Assignment' },
               { url: 'https://i.pinimg.com/736x/fc/ae/ef/fcaeef015089142182a913aa459f60a3.jpg', description: 'Horror Movie night'},
               { url: 'https://i.pinimg.com/736x/f5/9b/88/f59b8855311ecd815a3d1932fa49e547.jpg', description: 'It\'s colder without you around'},
               { url: 'https://i.pinimg.com/736x/11/06/98/110698eb5b90e05bac7282b60979b972.jpg', description: ''},
@@ -1209,7 +1238,7 @@
               { url: 'https://i.pinimg.com/736x/96/e3/49/96e349897711d0f168fae21fbfa46d2a.jpg', description: 'Sunset (Lovers?)'},
               { url: 'https://i.pinimg.com/736x/6f/7d/4d/6f7d4dc20f9a24f99b713535f3cdd1fe.jpg', description: ''},
               { url: 'https://i.pinimg.com/736x/e7/68/50/e76850a3a0f00def55c8f19a99427d80.jpg', description: 'Practice match with Nii-chan!'},
-              { url: 'https://i.pinimg.com/736x/43/66/a9/4366a919c88df9baf76278b877bafe1a.jpg', description: 'Luck is in with me today!'},
+              { url: 'https://i.pinimg.com/736x/43/66/a9/4366a919c88df9baf76278b877bafe1a.jpg', description: 'Lady Luck is with me today!'},
               { url: 'https://i.pinimg.com/736x/e7/56/8c/e7568cf071b14bbd74aafd03a6ba0661.jpg', description: 'Ready for practice with Nii-chan!'},
               { url: 'https://i.pinimg.com/736x/0d/02/27/0d02271ddb70edea19fcd123200969f9.jpg', description: 'Nii-chan is the kindest person!'},
               { url: 'https://i.pinimg.com/736x/ee/27/fc/ee27fc259adcfaab75021403005a89da.jpg', description: ''},
@@ -1220,7 +1249,16 @@
             name: 'Favorites',
             photos: [
               { url: 'https://i.pinimg.com/1200x/6a/3f/ac/6a3fac11f434574aeb030d56f7c4a349.jpg', description: 'Where are shared dream started'},
+              { url: 'https://i.pinimg.com/736x/23/6f/b1/236fb15253ecf26bd71a9f916491cffc.jpg', description: 'What should I draw?'},
+              { url: 'https://i.pinimg.com/1200x/56/c6/ec/56c6ec4df633a8d61d8a5f9ee1146e7e.jpg', description: 'Went to the beach to cool off.'},
               { url: 'https://i.pinimg.com/736x/88/c3/1e/88c31e5ac1c4c0882c69b273751c6f1d.jpg', description: 'Our first trophy playing together!'},
+              { url: 'https://i.pinimg.com/1200x/31/e5/c8/31e5c8d7a23f6823c7840074d92385a0.jpg', description: 'Went to grandma\'s house and found this owl. Nii-chan said it looks like me!'},
+              { url: 'https://i.pinimg.com/736x/b3/29/56/b329561b4d6d9a49cfea101b4c5c1ddd.jpg', description: 'Summer Festival'},
+              { url: 'https://i.pinimg.com/736x/a8/b6/d8/a8b6d8add153f1a9a73cfbc4e2ae6518.jpg', description: 'Us playing together'},
+              { url: 'https://i.pinimg.com/736x/e1/00/cd/e100cd7cf24881c81374dd31462583b4.jpg', description: 'SAE 🩷 = RIN 🩵'},
+              { url: 'https://i.pinimg.com/736x/f5/68/45/f56845b16c3aed636f578a7daa6b095c.jpg', description: 'Almost fell down. Nii-chan is my savior!'},
+              
+
             ]
           },
           niiChan: {
@@ -1232,14 +1270,27 @@
               { url: 'https://i.pinimg.com/736x/eb/f9/68/ebf96894301ab12a0d8f71ddafc22304.jpg', description: 'Nii-chan said he loves seeing his cock going in and out of me'},
               { url: 'https://i.pinimg.com/736x/7b/4d/06/7b4d0653bee7f3bdbaabe252938e3649.jpg', description: ''},
               { url: 'https://i.pinimg.com/736x/29/46/f1/2946f156f3c7d418b19509b975bc220d.jpg', description: 'Nii-chan\'s so hot'},
-              { url: 'https://i.pinimg.com/736x/ce/10/c5/ce10c562ab5ebf4a8b08d89bb40a9851.jpg', description: 'My first time and it was nerve cracking. Nii-chan loved it though'},
+              { url: 'https://i.pinimg.com/736x/36/d2/3b/36d23b5dbb5efec99d4de7a7897ecdc1.jpg', description: 'Nii-chan said I can eat his \'popsicle\' anytime I want ;)'},
               { url: 'https://i.pinimg.com/736x/81/09/08/8109086a16b442943a3b9c383d0a228d.jpg', description: ''},
-              { url: 'https://i.pinimg.com/736x/b3/c8/2b/b3c82b1e8403443d5f9ddf31e6decfa0.jpg', description: ''},
               { url: 'https://i.pinimg.com/1200x/62/83/71/6283719f78e7a97dbc78ded0f76aba02.jpg', description: 'Making out in Dad\'s car'},
+              { url: 'https://i.pinimg.com/736x/ce/10/c5/ce10c562ab5ebf4a8b08d89bb40a9851.jpg', description: 'My first time and it was nerve cracking. Nii-chan loved it though'},
               { url: 'https://i.pinimg.com/736x/0b/51/5d/0b515d218a255171cd99c043f46db424.jpg', description: ''},
               { url: 'https://i.pinimg.com/736x/67/1d/40/671d40ea38edc5186d72cd977f565410.jpg', description: 'Nii-chan couldn\'t help it'},
               { url: 'https://i.pinimg.com/736x/f7/27/ad/f727adf6db9b165a0468cf0fedacbf01.jpg', description: 'Going home with you'},
               { url: 'https://i.pinimg.com/736x/29/c3/2b/29c32b61e45037f69b5dd482f5edd032.jpg', description: 'No one was looking.'},
+            ]
+          },
+          whatIf: {
+            name: 'What if',
+            photos: [
+              { url: 'https://i.pinimg.com/736x/9e/51/b4/9e51b4db27983e5243c9218e0d6a8aaf.jpg', description: ''},
+              { url: 'https://i.pinimg.com/736x/2c/7c/e7/2c7ce757f4afebb7a56a04e8cf3f2b76.jpg', description: 'Can\'t even look at myself in the mirror because it reminds me of you'},
+              { url: 'https://i.pinimg.com/736x/b7/72/c8/b772c8890a77ecf60784ad29ec6a0ad7.jpg', description: ''},
+              { url: 'https://i.pinimg.com/736x/db/e0/6b/dbe06b94c7afd1c793748980d23d7842.jpg', description: 'My new comfort'},
+              { url: 'https://i.pinimg.com/736x/02/8f/e1/028fe14225a0c9dbc8bd66e669f04dee.jpg', description: 'He said I\'m lukewarm. He doesn\'t need me anymore. I\'m not even worth his time'},
+              { url: 'https://i.pinimg.com/736x/2d/96/4f/2d964fe43f901c2068a9dd1d18546a21.jpg', description: 'Begged mom to buy me sleeping pills'},
+              { url: 'https://i.pinimg.com/736x/aa/bf/f6/aabff68b2bbda9c7c2229a43d82c0709.jpg', description: 'What if...'},
+              { url: 'https://i.pinimg.com/736x/df/ef/65/dfef6515525aef5d85fc0de91f6b1456.jpg', description: 'The night you left me'},
             ]
           }
         };
@@ -1247,8 +1298,11 @@
 
         function updateAlbumCounts() {
           Object.keys(albumData).forEach(albumName => {
-            // Skip showing Nii-chan album unless unlocked in this session
+            // Skip showing secret albums unless unlocked in this session
             if (albumName === 'niiChan' && !window.niiChanUnlocked) {
+              return;
+            }
+            if (albumName === 'whatIf' && !window.whatIfUnlocked) {
               return;
             }
             const count = albumData[albumName].photos.length;
@@ -1352,8 +1406,10 @@
           }
         }
 
-        function showNiiChanAlbumIfUnlocked() {
+        function showSecretAlbumsIfUnlocked() {
           const niiChanAlbum = document.getElementById('niiChanAlbum');
+          const whatIfAlbum = document.getElementById('whatIfAlbum');
+
           if (niiChanAlbum) {
             if (window.niiChanUnlocked) {
               niiChanAlbum.classList.remove('hidden');
@@ -1363,9 +1419,24 @@
               niiChanAlbum.classList.add('hidden');
             }
           }
+
+          if (whatIfAlbum) {
+            if (window.whatIfUnlocked) {
+              whatIfAlbum.classList.remove('hidden');
+              const countEl = document.getElementById('count-whatIf');
+              if (countEl) countEl.textContent = albumData.whatIf.photos.length;
+            } else {
+              whatIfAlbum.classList.add('hidden');
+            }
+          }
+        }
+
+        function showNiiChanAlbumIfUnlocked() {
+          showSecretAlbumsIfUnlocked();
         }
 
         // Make functions globally accessible
+        window.showSecretAlbumsIfUnlocked = showSecretAlbumsIfUnlocked;
         window.showNiiChanAlbumIfUnlocked = showNiiChanAlbumIfUnlocked;
 
         function closePhotoViewer() {
@@ -1408,3 +1479,154 @@
           });
         }
 
+
+        // Message Threading System
+        const messageThreads = {
+          'shitty-aniki': {
+            name: 'Shitty Aniki',
+            icon: 'SN',
+            messages: [
+              { sender: 'them', text: 'Hey, how\'s it going?', time: '10:30 AM' },
+              { sender: 'you', text: 'I hate you!', time: '10:32 AM' },
+              { sender: 'them', text: 'What?? Why?', time: '10:35 AM' }
+            ]
+          },
+          'mom': {
+            name: 'Mom',
+            icon: 'M',
+            messages: [
+              { sender: 'them', text: 'Get home safe, darling!', time: '5:45 PM', date: 'April 11, 2021' },
+              { sender: 'you', text: 'I will, see you soon!', time: '5:46 PM', date: 'April 11, 2021' },
+              { sender: 'them', text: 'How are you doing?', time: '10:30 AM', date: 'April 12, 2021' },
+              { sender: 'you', text: 'I\'m good! How about you?', time: '10:31 AM', date: 'April 12, 2021' }
+            ]
+          },
+          'dad': {
+            name: 'Dad',
+            icon: 'D',
+            messages: [
+              { sender: 'them', text: 'See you in a few weeks, Rin', time: '2:15 PM' },
+              { sender: 'you', text: 'Safe travels!', time: '2:16 PM' }
+            ]
+          },
+          'isagi-yoichi': {
+            name: 'Isagi Yoichi',
+            icon: 'IY',
+            messages: [
+              { sender: 'them', text: 'Want to train together?', time: '7:20 PM' },
+              { sender: 'you', text: 'Shut up', time: '7:21 PM' }
+            ]
+          },
+          'shidou-ryusei': {
+            name: 'Shidou Ryusei',
+            icon: 'SR',
+            messages: [
+              { sender: 'them', text: 'Let\'s play a match', time: '6:00 PM' },
+              { sender: 'you', text: 'I\'m not interested', time: '6:01 PM' }
+            ]
+          },
+          'miss-anri-teieri': {
+            name: 'Miss Anri Teieri',
+            icon: 'MAT',
+            messages: [
+              { sender: 'them', text: 'Please get here before 5 PM. Thank you!', time: '4:30 PM' }
+            ]
+          },
+          'empty-1': { name: 'Empty 1', icon: '?', messages: [] },
+          'empty-2': { name: 'Empty 2', icon: '?', messages: [] },
+          'empty-3': { name: 'Empty 3', icon: '?', messages: [] }
+        };
+
+        function displayThreadMessages(id) {
+          const container = document.getElementById('messagesContainer');
+          const thread = messageThreads[id];
+          if (!container || !thread) return;
+
+          container.innerHTML = '';
+          let previousDate = null;
+
+          thread.messages.forEach((msg) => {
+            // If date changed, show date divider
+            if (msg.date && msg.date !== previousDate) {
+              const dateHeader = document.createElement('div');
+              dateHeader.className = 'message-timestamp';
+              dateHeader.textContent = msg.date;
+              container.appendChild(dateHeader);
+              previousDate = msg.date;
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${msg.sender === 'you' ? 'sent' : 'received'}`;
+
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.textContent = msg.text;
+
+            messageDiv.appendChild(bubble);
+            container.appendChild(messageDiv);
+          });
+
+          container.scrollTop = container.scrollHeight;
+        }
+
+        function sendThreadMessage(id, text) {
+          if (!text.trim()) return;
+          
+          const thread = messageThreads[id];
+          if (!thread) return;
+          
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          
+          thread.messages.push({
+            sender: 'you',
+            text: text,
+            time: timeStr
+          });
+          
+          displayThreadMessages(id);
+        }
+
+        window.currentThreadId = null;
+
+        function openThreadView(id) {
+          const thread = messageThreads[id];
+          if (!thread) return;
+
+          window.currentThreadId = id;
+          const thread_el = document.getElementById('conversationThread');
+          const items = document.querySelectorAll('#app-messages .message-item');
+
+          if (thread_el) {
+            thread_el.style.display = 'flex';
+            items.forEach(item => item.style.display = 'none');
+            document.getElementById('threadTitle').textContent = thread.name;
+            displayThreadMessages(id);
+            const messageInputEl = document.getElementById('messageInput');
+            if (messageInputEl) messageInputEl.focus();
+          }
+        }
+
+        function closeThreadView() {
+          const thread_el = document.getElementById('conversationThread');
+          const items = document.querySelectorAll('#app-messages .message-item');
+
+          if (thread_el) {
+            thread_el.style.display = 'none';
+            items.forEach(item => item.style.display = 'flex');
+            window.currentThreadId = null;
+          }
+        }
+
+        // Setup thread input - called after fragments load
+        function setupThreadInput() {
+          const messageInput = document.getElementById('messageInput');
+          if (messageInput) {
+            messageInput.addEventListener('keypress', (e) => {
+              if (e.key === 'Enter' && window.currentThreadId) {
+                sendThreadMessage(window.currentThreadId, messageInput.value);
+                messageInput.value = '';
+              }
+            });
+          }
+        }

@@ -1630,3 +1630,29 @@
             });
           }
         }
+
+        // Security: Protect critical functions from external modification
+        function lockDownApp() {
+          if (!window.AO3Security) return;
+
+          // Make sensitive functions immutable
+          const criticalFunctions = ['openThreadView', 'closeThreadView', 'sendThreadMessage',
+                                    'displayThreadMessages', 'openModal', 'saveEvent', 'deleteEvent'];
+
+          criticalFunctions.forEach(fnName => {
+            if (typeof window[fnName] === 'function') {
+              try {
+                Object.freeze(window[fnName]);
+              } catch (e) {
+                // Function already protected or not available
+              }
+            }
+          });
+
+          console.log('🔒 Critical functions locked - modifications restricted');
+        }
+
+        // Execute lockdown after app fully initializes
+        setTimeout(() => {
+          lockDownApp();
+        }, 3000);

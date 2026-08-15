@@ -706,7 +706,7 @@
 
             const PERMANENT_EVENTS = ['2026-09-08', '2026-10-09'];
             const PERMANENT_EVENTS_DATA = {
-              '2026-09-08': { title: '🦉🎉', time: '', description: 'Another Album Password' },
+              '2026-09-08': { title: '🦉🎉', time: '', description: 'Happy Birthday!' },
               '2026-10-09': { title: "🍵🎉", time: '', description: 'Password to my locked notes' }
             };
 
@@ -1048,7 +1048,7 @@
           const convScroll = document.querySelector('#app-messages .conversation-scroll');
           if (!convScroll) return;
           convScroll.innerHTML = '';
-          const msgs = window.__messagesStore[id] || [];
+          const msgs = (window.__messagesStore[id] || []).sort((a, b) => new Date(a.time) - new Date(b.time));
           msgs.forEach(m => {
             const bubble = document.createElement('div');
             bubble.className = 'conv-bubble ' + (m.from === 'me' ? 'me' : 'them');
@@ -1249,15 +1249,30 @@
         }
 
         function loadSecretNotes() {
-          fetch('Apps/Secret_Notes.html')
-            .then(r => { if (!r.ok) throw new Error('Failed to load secret notes'); return r.text(); })
+          fetch('Apps/Notes.html')
+            .then(r => { if (!r.ok) throw new Error('Failed to load notes'); return r.text(); })
             .then(html => {
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(html, 'text/html');
+              const lockedNotes = Array.from(doc.querySelectorAll('.locked-note'))
+                .filter(el => el.querySelector('.note-text')?.textContent?.trim())
+                .map(el => el.cloneNode(true));
+
               const container = document.getElementById('locked-notes-content');
-              container.innerHTML = '<div class="locked-notes-section">' + html + '</div>';
+              if (lockedNotes.length === 0) {
+                container.innerHTML = '<div class="locked-notes-section"><div style="color: #999;">No locked notes yet</div></div>';
+              } else {
+                const html = lockedNotes.map(note => {
+                  note.classList.remove('locked-note');
+                  note.classList.add('note-card');
+                  return note.outerHTML;
+                }).join('');
+                container.innerHTML = '<div class="locked-notes-section">' + html + '</div>';
+              }
             })
             .catch(err => {
-              console.error('Secret notes load error:', err);
-              document.getElementById('locked-notes-content').innerHTML = '<div class="locked-notes-section"><div style="color: #ff6b6b;">Failed to load secret notes</div></div>';
+              console.error('Locked notes load error:', err);
+              document.getElementById('locked-notes-content').innerHTML = '<div class="locked-notes-section"><div style="color: #ff6b6b;">Failed to load locked notes</div></div>';
             });
         }
 
@@ -1294,7 +1309,7 @@
           camera: {
             name: 'Camera',
             photos: [
-              
+              { url: 'https://i.pinimg.com/736x/5b/74/04/5b7404077e8f01853b944fd3d802aa9c.jpg', description: 'That asshole sent me a ticket to his game. Didn\'t even bothered showing up his face ever since' },
               { url: 'https://i.pinimg.com/736x/88/98/ed/8898eddee24a263882b58ba8983623b2.jpg', description: 'Are we seeing the same stars? I miss you, Nii-chan'},
               { url: 'https://i.pinimg.com/736x/e2/d3/e5/e2d3e59cb3839d6d03bf1570ba1c166b.jpg', description: 'Late night practice'},
               { url: 'https://i.pinimg.com/1200x/a0/36/f3/a036f3d578d0e23b5244070425cf7f8d.jpg', description: 'Nii-chan, the moon is beautiful tonight'},
@@ -1321,6 +1336,8 @@
               { url: 'https://i.pinimg.com/736x/0d/02/27/0d02271ddb70edea19fcd123200969f9.jpg', description: 'Nii-chan is the kindest person!'},
               { url: 'https://i.pinimg.com/736x/ee/27/fc/ee27fc259adcfaab75021403005a89da.jpg', description: ''},
               { url: 'https://i.pinimg.com/1200x/bb/db/82/bbdb8215449cb98cb515460452d3d7ef.jpg', description: 'Ice cream after Nii-chan\'s practice'},
+              { url: 'https://i.pinimg.com/736x/11/01/a4/1101a48b40d43223e48d1950fdfbcadf.jpg', description: 'Curry'},
+              
             ]
           },
           favorites: {
@@ -2099,7 +2116,9 @@
           const enabled = item.dataset.enabled !== 'false';
 
           let scheduleHtml = '';
-          if (item.dataset.date) {
+          if (item.dataset.date === 'Everyday') {
+            scheduleHtml = `<div class="alarm-item-date">Everyday</div>`;
+          } else if (item.dataset.date) {
             scheduleHtml = `<div class="alarm-item-date">${item.dataset.date}</div>`;
           } else {
             const activeDays = (item.dataset.days || '').toUpperCase();
@@ -2178,7 +2197,37 @@
         }
 
         // ==================== CAMERA APP ====================
+        let cameraMode = 'back';
+        let cameraIndex = 0;
         let cameraStream = null;
+        let selfiePhotos = [];
+        let shuffledPhotos = [];
+        let shufflePosition = 0;
+
+        function loadSelfiePhotos() {
+          const container = document.querySelector('#app-camera .screen-body');
+          if (!container) return;
+          selfiePhotos = Array.from(container.querySelectorAll('.selfie-photo'))
+            .map(el => el.dataset.url)
+            .filter(url => url && url.trim());
+          shufflePhotos();
+        }
+
+        function shufflePhotos() {
+          shuffledPhotos = [...selfiePhotos].sort(() => Math.random() - 0.5);
+          shufflePosition = 0;
+        }
+
+        function getNextShuffledPhoto() {
+          if (shuffledPhotos.length === 0) return 0;
+          if (shufflePosition >= shuffledPhotos.length) {
+            shufflePhotos();
+          }
+          const photoUrl = shuffledPhotos[shufflePosition];
+          const photoIndex = selfiePhotos.indexOf(photoUrl);
+          shufflePosition++;
+          return photoIndex >= 0 ? photoIndex : 0;
+        }
 
         function closeCameraStream() {
           if (cameraStream) {
@@ -2186,46 +2235,96 @@
             cameraStream = null;
           }
         }
+
         function initializeCamera() {
-          // Camera HTML is loaded from Apps/Camera.html
-          // Just set up the camera feed
+          loadSelfiePhotos();
           setupCameraFeed();
         }
 
         function setupCameraFeed() {
           const video = document.getElementById('cameraVideo');
-          const cameraToggle = document.getElementById('cameraToggle');
-          const recordToggle = document.getElementById('recordToggle');
-          let isRecording = false;
+          const img = document.getElementById('cameraImage');
+          const placeholder = document.getElementById('cameraPlaceholder');
+          const captureBtn = document.getElementById('cameraCapture');
+          const flipBtn = document.getElementById('cameraFlip');
+          const modeLabel = document.getElementById('cameraModeLabel');
 
-          if (!video) return;
+          if (!captureBtn) return;
 
-          // Close any existing stream first
-          closeCameraStream();
+          // Set initial display
+          updateCameraDisplay();
 
-          // Request camera access
-          navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'user' },
-            audio: false
-          }).then(stream => {
-            cameraStream = stream;
-            video.srcObject = stream;
-            if (cameraToggle) {
-              cameraToggle.textContent = '✓ Camera On';
-              cameraToggle.style.background = '#00957f';
-            }
-          }).catch(err => {
-            console.warn('Camera access denied:', err.message);
-            if (video.parentElement) {
-              video.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #aaa; text-align: center; padding: 20px;">📷 Camera access denied<br/><small>Check browser permissions</small></div>';
+          // Flip button switches camera mode
+          if (flipBtn) {
+            flipBtn.addEventListener('click', () => {
+              cameraMode = cameraMode === 'selfie' ? 'back' : 'selfie';
+              if (cameraMode === 'selfie' && selfiePhotos.length > 0) {
+                cameraIndex = getNextShuffledPhoto();
+              } else {
+                cameraIndex = 0;
+              }
+              closeCameraStream();
+              updateCameraDisplay();
+            });
+          }
+
+          // Capture button cycles through shuffled photos in selfie mode
+          captureBtn.addEventListener('click', () => {
+            if (cameraMode === 'selfie' && selfiePhotos.length > 0) {
+              cameraIndex = getNextShuffledPhoto();
+              updateCameraDisplay();
             }
           });
+        }
 
-          if (recordToggle) {
-            recordToggle.addEventListener('click', () => {
-              isRecording = !isRecording;
-              recordToggle.textContent = isRecording ? '⏹ Stop Recording' : '⚫ Record';
-              recordToggle.style.background = isRecording ? '#cc3333' : '#00a896';
+        function updateCameraDisplay() {
+          const video = document.getElementById('cameraVideo');
+          const img = document.getElementById('cameraImage');
+          const placeholder = document.getElementById('cameraPlaceholder');
+          const modeLabel = document.getElementById('cameraModeLabel');
+
+          if (cameraMode === 'selfie') {
+            // Selfie mode: show shuffled photos
+            if (modeLabel) modeLabel.textContent = 'Selfie Mode';
+            if (video) video.style.display = 'none';
+            if (img) img.style.display = 'none';
+            closeCameraStream();
+
+            if (selfiePhotos.length > 0) {
+              const photoUrl = selfiePhotos[cameraIndex];
+              if (img) {
+                img.src = photoUrl;
+                img.style.display = 'block';
+              }
+              if (placeholder) placeholder.style.display = 'none';
+            } else {
+              if (placeholder) {
+                placeholder.style.display = 'flex';
+                placeholder.textContent = '📷\nNo photos linked';
+              }
+              if (img) img.style.display = 'none';
+            }
+          } else {
+            // Capture mode: real camera
+            if (modeLabel) modeLabel.textContent = 'Capture Mode';
+            if (placeholder) placeholder.style.display = 'none';
+            if (img) img.style.display = 'none';
+            if (video) video.style.display = 'block';
+
+            closeCameraStream();
+            navigator.mediaDevices.getUserMedia({
+              video: { facingMode: 'user' },
+              audio: false
+            }).then(stream => {
+              cameraStream = stream;
+              if (video) video.srcObject = stream;
+            }).catch(err => {
+              console.warn('Camera access denied:', err.message);
+              if (placeholder) {
+                placeholder.style.display = 'flex';
+                placeholder.textContent = '📷\nCamera access denied';
+              }
             });
           }
         }
+

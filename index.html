@@ -123,6 +123,11 @@
           <div class="app-label">Calculator</div>
         </div>
 
+        <div class="app-icon" onclick="openApp('app-ytmusic', this)" data-app="music">
+          <div class="icon-box">🎵</div>
+          <div class="app-label">Music</div>
+        </div>
+
         <div class="app-icon locked" onclick="openApp('app-shopping', this)" data-app="shopping" title="Locked">
           <div class="icon-box">🛍️</div>
           <div class="app-label">Shops</div>
@@ -280,10 +285,10 @@
 
       </div>
     </div>
-    <div id="app-ytmusic" class="app-screen"><div class="screen-header"><button class="back-btn" onclick="closeApp('app-ytmusic')">‹ Back</button><div class="screen-title">YT Music</div><div style="width:50px;"></div></div><div class="screen-body"><p><b>Now Playing:</b> Heavy Metal / Focus Playlist</p></div></div>
+    <div id="app-ytmusic" class="app-screen"><div class="screen-header"><button class="back-btn" onclick="closeApp('app-ytmusic')">‹ Back</button><div class="screen-title">Music</div><div style="width:50px;"></div></div><div class="screen-body"><div class="loading">Loading playlist…</div></div></div>
     <div id="app-gallery" class="app-screen"><div class="screen-header"><button class="back-btn" onclick="closeApp('app-gallery')">‹ Back</button><div class="screen-title">Gallery</div><div style="width:50px;"></div></div><div class="screen-body"><p><i>[Folder: Hidden]</i> 1,240 photos (Tagged: Nii-chan)</p></div></div>
     <div id="app-files" class="app-screen"><div class="screen-header"><button class="back-btn" onclick="closeApp('app-files')">‹ Back</button><div class="screen-title">Files</div><div style="width:50px;"></div></div><div class="screen-body"><p>• match_analysis_sae.mp4</p></div></div>
-    <div id="app-clock" class="app-screen"><div class="screen-header"><button class="back-btn" onclick="closeApp('app-clock')">‹ Back</button><div class="screen-title">Clock</div><div style="width:50px;"></div></div><div class="screen-body"><p><b>Alarm:</b> 05:00 AM (Strikers Run)</p></div></div>
+    <div id="app-clock" class="app-screen"><div class="screen-header"><button class="back-btn" onclick="closeApp('app-clock')">‹ Back</button><div class="screen-title">Clock</div><div style="width:50px;"></div></div><div class="screen-body"></div></div>
     <div id="app-calendar" class="app-screen"><div class="screen-header"><button class="back-btn" onclick="closeApp('app-calendar')">‹ Back</button><div class="screen-title">Calendar</div><div style="width:50px;"></div></div><div class="screen-body"><p>• Oct 10: Nii-chan's Birthday 🎂</p><p>• Sep 09: Rin's Birthday ⚽</p></div></div>
 
   </div>

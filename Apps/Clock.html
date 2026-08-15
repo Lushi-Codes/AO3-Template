@@ -1,0 +1,390 @@
+<div class="alarm-app">
+  <div class="alarm-countdown">
+    <div class="alarm-countdown-main" id="alarmCountdownText">No alarms set</div>
+    <div class="alarm-countdown-sub" id="alarmCountdownDate"></div>
+  </div>
+
+  <div class="alarm-toolbar">
+    <button class="alarm-icon-btn" title="Add alarm" onclick="openAlarmEditor()">+</button>
+    <button class="alarm-icon-btn" title="More">⋮</button>
+  </div>
+
+  <div class="alarm-list" id="alarmList">
+    <!-- ==================================================================
+         Alarms — add more by copying an .alarm-item block.
+         data-time is 24-hour "HH:MM". data-days uses single letters from
+         S M T W T F S for repeating alarms (e.g. "MTWTF"). For a one-time
+         alarm, use data-date instead of data-days (e.g. "Fri, Aug 14").
+         data-enabled is "true" or "false". data-label is optional.
+         ================================================================== -->
+    <div class="alarm-item" data-time="06:00" data-days="MTWTF" data-enabled="true" data-label="Wake Up"></div>
+    <div class="alarm-item" data-time="06:30" data-days="MTWTF" data-enabled="true" data-label="Yoga and Meditation"></div>
+    <div class="alarm-item" data-time="07:00" data-days="MTWTF" data-enabled="true" data-label="Morning Run"></div>
+  </div>
+
+  <!-- Add-alarm editor — alarms created here live only in this session and
+       disappear on refresh (nothing is written to storage). -->
+  <div class="alarm-editor-overlay" id="alarmEditorOverlay" style="display:none;" onclick="if(event.target===this) closeAlarmEditor()">
+    <div class="alarm-editor-sheet">
+      <div class="time-picker">
+        <div class="time-wheel" id="hourWheel"></div>
+        <div class="time-sep">:</div>
+        <div class="time-wheel" id="minuteWheel"></div>
+        <div class="ampm-toggle">
+          <button type="button" class="ampm-btn active" data-val="AM" onclick="selectAmPm(this)">AM</button>
+          <button type="button" class="ampm-btn" data-val="PM" onclick="selectAmPm(this)">PM</button>
+        </div>
+        <div class="time-wheel-highlight"></div>
+      </div>
+
+      <div class="alarm-editor-days" id="alarmEditorDays">
+        <span class="editor-day" data-letter="S">S</span>
+        <span class="editor-day" data-letter="M">M</span>
+        <span class="editor-day" data-letter="T">T</span>
+        <span class="editor-day" data-letter="W">W</span>
+        <span class="editor-day" data-letter="T">T</span>
+        <span class="editor-day" data-letter="F">F</span>
+        <span class="editor-day" data-letter="S">S</span>
+      </div>
+
+      <input type="text" class="alarm-editor-name" id="alarmEditorName" placeholder="Alarm name" maxlength="40" />
+
+      <div class="alarm-editor-actions">
+        <button type="button" class="alarm-editor-cancel" onclick="closeAlarmEditor()">Cancel</button>
+        <button type="button" class="alarm-editor-save" onclick="saveNewAlarm()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.alarm-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  background: #0b0f12;
+  padding: 24px 16px 16px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.alarm-countdown {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.alarm-countdown-main {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.alarm-countdown-sub {
+  font-size: 14px;
+  color: #999;
+  margin-top: 6px;
+}
+
+.alarm-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+
+.alarm-icon-btn {
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.alarm-list {
+  background: #16181b;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.alarm-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid #262a2e;
+  gap: 12px;
+}
+
+.alarm-item:last-child {
+  border-bottom: none;
+}
+
+.alarm-item-main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.alarm-item-time {
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.alarm-item-time .ampm {
+  font-size: 14px;
+  font-weight: 600;
+  margin-left: 4px;
+  color: #ccc;
+}
+
+.alarm-item.disabled .alarm-item-time,
+.alarm-item.disabled .alarm-item-time .ampm {
+  color: #3d6fa8;
+}
+
+.alarm-item-label {
+  font-size: 12px;
+  color: #999;
+}
+
+.alarm-item-days {
+  display: flex;
+  gap: 6px;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.alarm-item-days .day {
+  color: #555;
+}
+
+.alarm-item-days .day.on {
+  color: #4f9eff;
+  font-weight: 700;
+}
+
+.alarm-item.disabled .alarm-item-days .day.on {
+  color: #3d6fa8;
+}
+
+.alarm-item-date {
+  font-size: 13px;
+  color: #999;
+}
+
+.alarm-toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.alarm-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.alarm-toggle .toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #444;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.alarm-toggle .toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.alarm-toggle input:checked + .toggle-slider {
+  background: #3d7fe0;
+}
+
+.alarm-toggle input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+/* Add-alarm editor */
+.alarm-editor-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  z-index: 50;
+}
+
+.alarm-editor-sheet {
+  background: #16181b;
+  border-radius: 20px 20px 0 0;
+  padding: 20px 18px 18px;
+  box-sizing: border-box;
+}
+
+.time-picker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+.time-wheel {
+  height: 168px;
+  width: 64px;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.time-wheel::-webkit-scrollbar {
+  display: none;
+}
+
+.time-wheel-pad {
+  height: 56px;
+}
+
+.time-wheel-item {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: #555;
+  scroll-snap-align: center;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.time-wheel-item.active {
+  color: #fff;
+  font-weight: 700;
+}
+
+.time-sep {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.time-wheel-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 56px;
+  height: 56px;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  pointer-events: none;
+}
+
+.ampm-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.ampm-btn {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.ampm-btn.active {
+  color: #4f9eff;
+}
+
+.alarm-editor-days {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 4px;
+  margin-bottom: 16px;
+}
+
+.editor-day {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #777;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.editor-day.on {
+  background: #3d7fe0;
+  color: #fff;
+}
+
+.alarm-editor-name {
+  width: 100%;
+  box-sizing: border-box;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #444;
+  color: #fff;
+  font-size: 16px;
+  padding: 8px 4px;
+  margin-bottom: 20px;
+  outline: none;
+}
+
+.alarm-editor-name::placeholder {
+  color: #666;
+}
+
+.alarm-editor-name:focus {
+  border-bottom-color: #4f9eff;
+}
+
+.alarm-editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24px;
+}
+
+.alarm-editor-cancel,
+.alarm-editor-save {
+  background: none;
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 8px 4px;
+}
+
+.alarm-editor-cancel {
+  color: #999;
+}
+
+.alarm-editor-save {
+  color: #4f9eff;
+}
+</style>

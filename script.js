@@ -388,23 +388,69 @@
           row.classList.toggle('expanded');
         }
 
+        function goToKeypadWithNumber(number) {
+          const norm = normalizeNumber(number);
+          openApp('app-phone');
+          const keypadTabBtn = document.querySelector('#app-phone .phone-tab[data-tab="keypad"]');
+          phoneSwitchTab('keypad', keypadTabBtn);
+          const display = document.querySelector('#phoneKeypad .dial-display');
+          if (display) display.value = norm;
+        }
+
+        function goToMessageThreadForContact(name, icon) {
+          openApp('app-messages');
+          const existingId = Object.keys(messageThreads).find(id =>
+            messageThreads[id].name.trim().toLowerCase() === name.trim().toLowerCase()
+          );
+          if (existingId) {
+            openThreadView(existingId);
+            return;
+          }
+
+          const id = slugify(name) || ('chat-' + Math.random().toString(36).slice(2));
+          const resolvedIcon = icon || (name[0] || '?').toUpperCase();
+          messageThreads[id] = { name, icon: resolvedIcon, messages: [] };
+
+          const list = document.querySelector('#app-messages .message-list');
+          if (list && !list.querySelector(`.message-item[data-id="${id}"]`)) {
+            const el = document.createElement('div');
+            el.className = 'message-item';
+            el.dataset.id = id;
+            el.innerHTML = `
+              <div class="avatar">${escapeHtml(resolvedIcon)}</div>
+              <div class="message-main">
+                <div class="message-name">${escapeHtml(name)}</div>
+                <div class="message-snippet"></div>
+              </div>
+              <div class="message-meta"><div class="message-date"></div></div>
+            `;
+            el.style.cursor = 'pointer';
+            el.addEventListener('click', () => {
+              openApp('app-messages');
+              openThreadView(id);
+            });
+            list.insertBefore(el, list.firstChild);
+          }
+
+          openThreadView(id);
+        }
+
         function handleContactAction(btn) {
           const row = btn.closest('.contact-row');
           if (!row) return;
           const number = row.dataset.number || row.querySelector('.contact-number')?.textContent || '';
-          const norm = normalizeNumber(number);
+          const name = row.querySelector('.contact-name')?.textContent.trim() || '';
+          const avatar = row.querySelector('.contact-avatar')?.textContent.trim() || '';
           if (btn.classList.contains('action-call')) {
-            showToast('Calling ' + number, 1200);
-            if (norm) window.location.href = 'tel:' + norm;
+            goToKeypadWithNumber(number);
             return;
           }
           if (btn.classList.contains('action-msg')) {
-            showToast('Opening SMS to ' + number, 1200);
-            if (norm) window.location.href = 'sms:' + norm;
+            goToMessageThreadForContact(name, avatar);
             return;
           }
           if (btn.classList.contains('action-info')) {
-            showToast('Info for ' + row.querySelector('.contact-name')?.textContent.trim(), 1200);
+            showToast('Info for ' + name, 1200);
             return;
           }
         }
@@ -589,7 +635,7 @@
                   expr = '';
                   return;
                 }
-                if (expr === '0909') {
+                if (expr === '090902') {
                   window.whatIfUnlocked = true;
                   set('🔪');
                   expr = '';
@@ -661,7 +707,7 @@
             const PERMANENT_EVENTS = ['2026-09-08', '2026-10-09'];
             const PERMANENT_EVENTS_DATA = {
               '2026-09-08': { title: '🦉🎉', time: '', description: 'Another Album Password' },
-              '2026-10-09': { title: "Nii-chan's Birthday 🎉", time: '', description: 'His birthday is the password to my locked notes' }
+              '2026-10-09': { title: "🍵🎉", time: '', description: 'Password to my locked notes' }
             };
 
             function loadEvents() {
@@ -765,7 +811,7 @@
               if (events.length > 0) {
                 const eventsDiv = document.createElement('div');
                 eventsDiv.className = 'cal-day-events';
-                eventsDiv.textContent = events[0].title.substring(0, 8) + (events.length > 1 ? '...' : '');
+                eventsDiv.textContent = events[0].title + (events.length > 1 ? ' ...' : '');
                 dayEl.appendChild(eventsDiv);
               }
 
@@ -1073,12 +1119,15 @@
             { file: 'Apps/Calculator.html', selector: '#app-calculator .screen-body' },
             { file: 'Apps/Calendar.html', selector: '#app-calendar .screen-body' },
             { file: 'Apps/Camera.html', selector: '#app-camera .screen-body' },
+            { file: 'Apps/Clock.html', selector: '#app-clock .screen-body' },
+            { file: 'Apps/Music.html', selector: '#app-ytmusic .screen-body' },
           ];
 
           const promises = mappings.map(map => loadFragmentTo(map.selector, map.file));
           return Promise.all(promises).then(() => {
             console.log('All fragments loaded');
             setupMessagesList();
+            loadMessageThreadsFromFragment();
             setupMessagesConversationControls();
             setupThreadInput();
             initializeLockedNotes();
@@ -1106,6 +1155,14 @@
             console.log('Initializing phone recents...');
             if (typeof initializeRecents === 'function') initializeRecents();
             else console.warn('initializeRecents not defined');
+
+            console.log('Initializing music player...');
+            if (typeof initializeMusicPlayer === 'function') initializeMusicPlayer();
+            else console.warn('initializeMusicPlayer not defined');
+
+            console.log('Initializing clock...');
+            if (typeof initializeClock === 'function') initializeClock();
+            else console.warn('initializeClock not defined');
           });
         }
 
@@ -1502,61 +1559,33 @@
 
 
         // Message Threading System
-        const messageThreads = {
-          'shitty-aniki': {
-            name: 'Shitty Aniki',
-            icon: 'SN',
-            messages: [
-              { sender: 'them', text: 'Hey, how\'s it going?', time: '10:30 AM' },
-              { sender: 'you', text: 'I hate you!', time: '10:32 AM' },
-              { sender: 'them', text: 'What?? Why?', time: '10:35 AM' }
-            ]
-          },
-          'mom': {
-            name: 'Mom',
-            icon: 'M',
-            messages: [
-              { sender: 'them', text: 'Get home safe, darling!', time: '5:45 PM', date: 'April 11, 2021' },
-              { sender: 'you', text: 'I will, see you soon!', time: '5:46 PM', date: 'April 11, 2021' },
-              { sender: 'them', text: 'How are you doing?', time: '10:30 AM', date: 'April 12, 2021' },
-              { sender: 'you', text: 'I\'m good! How about you?', time: '10:31 AM', date: 'April 12, 2021' }
-            ]
-          },
-          'dad': {
-            name: 'Dad',
-            icon: 'D',
-            messages: [
-              { sender: 'them', text: 'See you in a few weeks, Rin', time: '2:15 PM' },
-              { sender: 'you', text: 'Safe travels!', time: '2:16 PM' }
-            ]
-          },
-          'isagi-yoichi': {
-            name: 'Isagi Yoichi',
-            icon: 'IY',
-            messages: [
-              { sender: 'them', text: 'Want to train together?', time: '7:20 PM' },
-              { sender: 'you', text: 'Shut up', time: '7:21 PM' }
-            ]
-          },
-          'shidou-ryusei': {
-            name: 'Shidou Ryusei',
-            icon: 'SR',
-            messages: [
-              { sender: 'them', text: 'Let\'s play a match', time: '6:00 PM' },
-              { sender: 'you', text: 'I\'m not interested', time: '6:01 PM' }
-            ]
-          },
-          'miss-anri-teieri': {
-            name: 'Miss Anri Teieri',
-            icon: 'MAT',
-            messages: [
-              { sender: 'them', text: 'Please get here before 5 PM. Thank you!', time: '4:30 PM' }
-            ]
-          },
-          'empty-1': { name: 'Empty 1', icon: '?', messages: [] },
-          'empty-2': { name: 'Empty 2', icon: '?', messages: [] },
-          'empty-3': { name: 'Empty 3', icon: '?', messages: [] }
-        };
+        // Thread content (names, icons, messages) lives in Apps/Messages.html as
+        // hidden .thread-data blocks — parsed into this object once the fragment loads.
+        let messageThreads = {};
+
+        function loadMessageThreadsFromFragment() {
+          const container = document.querySelector('#app-messages .message-list');
+          if (!container) return;
+
+          messageThreads = {};
+          const threadEls = Array.from(container.querySelectorAll('.thread-data'));
+          threadEls.forEach(el => {
+            const id = el.dataset.id;
+            if (!id) return;
+            const name = el.dataset.name || id;
+            const icon = el.dataset.icon || '?';
+            const messages = Array.from(el.querySelectorAll('.thread-msg')).map(m => {
+              const msg = {
+                sender: m.dataset.sender || 'them',
+                text: m.textContent.trim(),
+                time: m.dataset.time || ''
+              };
+              if (m.dataset.date) msg.date = m.dataset.date;
+              return msg;
+            });
+            messageThreads[id] = { name, icon, messages };
+          });
+        }
 
         function displayThreadMessages(id) {
           const container = document.getElementById('messagesContainer');
@@ -1584,6 +1613,14 @@
             bubble.textContent = msg.text;
 
             messageDiv.appendChild(bubble);
+
+            if (msg.time) {
+              const time = document.createElement('div');
+              time.className = 'message-time';
+              time.textContent = msg.time;
+              messageDiv.appendChild(time);
+            }
+
             container.appendChild(messageDiv);
           });
 
@@ -1592,19 +1629,21 @@
 
         function sendThreadMessage(id, text) {
           if (!text.trim()) return;
-          
+
           const thread = messageThreads[id];
           if (!thread) return;
-          
+
           const now = new Date();
           const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          
+          const dateStr = now.toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' });
+
           thread.messages.push({
             sender: 'you',
             text: text,
-            time: timeStr
+            time: timeStr,
+            date: dateStr
           });
-          
+
           displayThreadMessages(id);
         }
 
@@ -1680,13 +1719,19 @@
 
         // ==================== PHONE APP ====================
         const phoneContacts = [
-          { name: 'Shitty Aniki', number: '+81 90-1102-8841', avatar: 'S' },
+          { name: 'Shitty Aniki', number: '+34 698 07 41 81', avatar: 'S' },
           { name: 'Mom', number: '+81 90-3312-0094', avatar: 'M' },
           { name: 'Dad', number: '+81 90-3312-0095', avatar: 'D' },
-          { name: 'Isagi Yoichi', number: '+81 80-4419-2018', avatar: 'IY' },
-          { name: 'Bachira Meguru', number: '+81 80-8821-3091', avatar: 'BM' },
-          { name: 'Miss Anri Teieri', number: '+81 30-5510-9923', avatar: 'AT' },
-          { name: 'Shidou Ryusei', number: '+81 80-1234-5678', avatar: 'SR' }
+          { name: 'NPC (Isagi)', number: '+81 80-4419-2018', avatar: 'N' },
+          { name: 'Noisy Bee (Bachira)', number: '+81 80-8821-3091', avatar: 'NB' },
+          { name: 'Miss Anri Teieri', number: '+81 30-5510-9923', avatar: 'A' },
+          { name: 'Ego', number: '+81 30-0000-1101', avatar: 'E' },
+          { name: 'Pesky Cockroach (Shidou)', number: '+81 90-6669-1313', avatar: 'PC' },
+          { name: 'Reo Mikage', number: '+81 90-9999-7777', avatar: 'Re' },
+          { name: 'Seishiro Nagi', number: '+81 90-2201-0042', avatar: 'SN' },
+          { name: 'Loki', number: '+33 6 12 34 56 78', avatar: 'L' },
+          { name: 'Charles', number: '+33 6 98 76 54 32', avatar: 'C' },
+          { name: 'Dabadie', number: '+34 612 89 40 11', avatar: 'Da' }
         ];
 
         function initializePhoneContacts() {
@@ -1713,41 +1758,51 @@
 
         // Make dialNumber globally available
         window.dialNumber = function(number) {
-          const keypadInput = document.getElementById('phoneDisplay');
-          if (keypadInput) {
-            keypadInput.value = number;
-          }
-          // Switch to keypad tab
-          switchPhoneTab('keypad');
+          goToKeypadWithNumber(number);
         };
 
-        function switchPhoneTab(tab) {
-          const tabs = ['keypad', 'recents', 'contacts'];
-          tabs.forEach(t => {
-            const el = document.getElementById('phone' + (t === 'keypad' ? 'Keypad' : t === 'recents' ? 'Recents' : 'Contacts'));
-            if (el) {
-              el.style.display = t === tab ? 'block' : 'none';
-            }
+        // Recents call data lives in Apps/Calls.html as hidden .recent-call
+        // blocks — parsed into this array once the fragment loads.
+        let phoneRecents = [];
+
+        function loadPhoneRecentsFromFragment() {
+          const container = document.querySelector('#phoneRecents .recents-list');
+          if (!container) return;
+          phoneRecents = Array.from(container.querySelectorAll('.recent-call')).map(el => {
+            const fullDate = new Date(el.dataset.datetime);
+            return {
+              name: el.dataset.name || '',
+              number: el.dataset.number || '',
+              type: el.dataset.type || 'incoming',
+              callCount: parseInt(el.dataset.count, 10) || 1,
+              audio: el.dataset.audio || '',
+              fullDate,
+              date: fullDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+            };
           });
         }
 
-        // Recents call data with dates and times
-        const phoneRecents = [
-          { name: 'Mom', number: '', type: 'missed', time: '2m ago', date: 'Aug 13', fullDate: new Date(2026, 7, 13, 14, 58), callCount: 1 },
-          { name: 'Dad', number: '', type: 'outgoing', time: 'Yesterday', date: 'Aug 12', fullDate: new Date(2026, 7, 12, 10, 30), callCount: 1 },
-          { name: 'Isagi Yoichi', number: '', type: 'incoming', time: '3 days ago', date: 'Aug 10', fullDate: new Date(2026, 7, 10, 15, 45), callCount: 1 }
-        ];
+        window.playCallRecording = function(index) {
+          const call = phoneRecents[index];
+          if (!call) return;
+          if (!call.audio) {
+            showToast('No recording available', 1200);
+            return;
+          }
+          new Audio(call.audio).play().catch(() => showToast('Unable to play recording', 1200));
+        };
 
         function initializeRecents() {
-          const recentsContainer = document.getElementById('phoneRecents');
+          loadPhoneRecentsFromFragment();
+          const recentsContainer = document.querySelector('#phoneRecents .recents-list');
           if (!recentsContainer) return;
 
           // Group recents by date
           const grouped = {};
-          phoneRecents.forEach(call => {
+          phoneRecents.forEach((call, index) => {
             const dateKey = call.date;
             if (!grouped[dateKey]) grouped[dateKey] = [];
-            grouped[dateKey].push(call);
+            grouped[dateKey].push({ ...call, index });
           });
 
           let html = '<div style="padding: 12px; color: #fff;">';
@@ -1762,7 +1817,7 @@
               const callCountText = call.callCount > 1 ? ` (${call.callCount})` : '';
 
               html += `
-                <div style="padding: 12px; background: #1a1a1a; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                <div onclick="playCallRecording(${call.index})" style="padding: 12px; background: #1a1a1a; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer;">
                   <div style="font-size: 18px;">${typeIcon}</div>
                   <div style="flex: 1;">
                     <div style="color: #fff; font-weight: 600;">${call.name}${callCountText}</div>
@@ -1776,6 +1831,350 @@
 
           html += '</div>';
           recentsContainer.innerHTML = html;
+        }
+
+        // ==================== MUSIC APP ====================
+        // Playlist data lives in Apps/Music.html as hidden .song-item
+        // blocks — parsed into this array once the fragment loads.
+        let playlistSongs = [];
+        let currentSongAudio = null;
+        let currentSongIndex = null;
+        let currentSongIsYouTube = false;
+
+        function loadPlaylistFromFragment() {
+          const container = document.querySelector('#app-ytmusic .screen-body');
+          if (!container) return;
+          playlistSongs = Array.from(container.querySelectorAll('.song-item')).map(el => ({
+            title: el.dataset.title || 'Untitled',
+            artist: el.dataset.artist || '',
+            duration: el.dataset.duration || '',
+            cover: el.dataset.cover || '🎵',
+            audio: el.dataset.audio || ''
+          }));
+        }
+
+        // Accepts youtu.be/ID, youtube.com/watch?v=ID, youtube.com/embed/ID —
+        // with or without extra query params (like ?si=... share links add).
+        function getYouTubeId(url) {
+          const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([A-Za-z0-9_-]{6,})/);
+          return match ? match[1] : null;
+        }
+
+        function renderPlaylist() {
+          const container = document.querySelector('#app-ytmusic .screen-body');
+          if (!container) return;
+          if (!playlistSongs.length) {
+            container.innerHTML = '<div class="loading">No songs yet</div>';
+            return;
+          }
+          container.innerHTML = '<div class="playlist-list">' + playlistSongs.map((song, i) => `
+            <div class="playlist-row" data-index="${i}" onclick="toggleSongPlay(${i})">
+              <div class="playlist-cover">${escapeHtml(song.cover)}</div>
+              <div class="playlist-main">
+                <div class="playlist-title">${escapeHtml(song.title)}</div>
+                <div class="playlist-sub">${escapeHtml(song.artist)}${song.artist && song.duration ? ' • ' : ''}${escapeHtml(song.duration)}</div>
+              </div>
+              <div class="playlist-toggle">▶️</div>
+            </div>
+          `).join('') + '</div>' +
+            '<div class="playlist-yt-wrap" id="playlistYtWrap" style="display:none;"><iframe id="playlistYtFrame" width="100%" height="180" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+        }
+
+        function initializeMusicPlayer() {
+          loadPlaylistFromFragment();
+          renderPlaylist();
+        }
+
+        function setPlaylistRowIcon(index, icon) {
+          const row = document.querySelector(`#app-ytmusic .playlist-row[data-index="${index}"]`);
+          if (!row) return;
+          row.classList.toggle('playing', icon === '⏸️');
+          const toggle = row.querySelector('.playlist-toggle');
+          if (toggle) toggle.textContent = icon;
+        }
+
+        function stopCurrentSong() {
+          if (currentSongIndex === null) return;
+          setPlaylistRowIcon(currentSongIndex, '▶️');
+          if (currentSongIsYouTube) {
+            const frame = document.getElementById('playlistYtFrame');
+            const wrap = document.getElementById('playlistYtWrap');
+            if (frame) frame.src = '';
+            if (wrap) wrap.style.display = 'none';
+          } else if (currentSongAudio) {
+            currentSongAudio.pause();
+          }
+          currentSongAudio = null;
+          currentSongIndex = null;
+          currentSongIsYouTube = false;
+        }
+
+        window.toggleSongPlay = function(index) {
+          const song = playlistSongs[index];
+          if (!song) return;
+
+          if (currentSongIndex === index) {
+            stopCurrentSong();
+            return;
+          }
+
+          if (!song.audio) {
+            showToast('No audio linked yet', 1200);
+            return;
+          }
+
+          stopCurrentSong();
+
+          const youtubeId = getYouTubeId(song.audio);
+          if (youtubeId) {
+            const frame = document.getElementById('playlistYtFrame');
+            const wrap = document.getElementById('playlistYtWrap');
+            const row = document.querySelector(`#app-ytmusic .playlist-row[data-index="${index}"]`);
+            if (!frame || !wrap) return;
+            if (row) row.insertAdjacentElement('afterend', wrap);
+            frame.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1`;
+            wrap.style.display = 'block';
+            currentSongIndex = index;
+            currentSongIsYouTube = true;
+            setPlaylistRowIcon(index, '⏸️');
+            wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            return;
+          }
+
+          currentSongAudio = new Audio(song.audio);
+          currentSongIndex = index;
+          currentSongIsYouTube = false;
+          setPlaylistRowIcon(index, '⏸️');
+          currentSongAudio.addEventListener('ended', () => {
+            setPlaylistRowIcon(index, '▶️');
+            currentSongAudio = null;
+            currentSongIndex = null;
+          });
+          currentSongAudio.play().catch(() => {
+            showToast('Unable to play song', 1200);
+            setPlaylistRowIcon(index, '▶️');
+            currentSongAudio = null;
+            currentSongIndex = null;
+          });
+        };
+
+        // ==================== CLOCK / ALARM APP ====================
+        const ALARM_DAY_LETTERS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+        function initializeClock() {
+          const list = document.getElementById('alarmList');
+          if (!list) return;
+          if (list._clockInitialized) { renderAlarmCountdown(); return; }
+          list._clockInitialized = true;
+
+          const items = Array.from(list.querySelectorAll('.alarm-item'));
+          items.forEach(item => renderAlarmItem(item));
+
+          renderAlarmCountdown();
+          setInterval(renderAlarmCountdown, 30000);
+
+          const dayEls = document.querySelectorAll('#alarmEditorDays .editor-day');
+          dayEls.forEach(el => el.addEventListener('click', () => el.classList.toggle('on')));
+        }
+
+        // ---- Add-alarm editor (session-only: nothing is persisted, so a
+        // refresh wipes any alarms the user creates here) ----
+        const TIME_WHEEL_ITEM_HEIGHT = 56;
+
+        function buildTimeWheel(el, values, defaultIndex) {
+          el.innerHTML = '';
+          el._values = values;
+
+          const topPad = document.createElement('div');
+          topPad.className = 'time-wheel-pad';
+          el.appendChild(topPad);
+
+          values.forEach(v => {
+            const item = document.createElement('div');
+            item.className = 'time-wheel-item';
+            item.textContent = v;
+            el.appendChild(item);
+          });
+
+          const bottomPad = document.createElement('div');
+          bottomPad.className = 'time-wheel-pad';
+          el.appendChild(bottomPad);
+
+          el.onscroll = () => {
+            clearTimeout(el._scrollTimeout);
+            el._scrollTimeout = setTimeout(() => snapWheel(el), 100);
+          };
+
+          el.scrollTop = defaultIndex * TIME_WHEEL_ITEM_HEIGHT;
+          updateWheelActive(el, defaultIndex);
+        }
+
+        function snapWheel(el) {
+          const index = Math.round(el.scrollTop / TIME_WHEEL_ITEM_HEIGHT);
+          el.scrollTo({ top: index * TIME_WHEEL_ITEM_HEIGHT, behavior: 'smooth' });
+          updateWheelActive(el, index);
+        }
+
+        function updateWheelActive(el, index) {
+          const items = el.querySelectorAll('.time-wheel-item');
+          const clamped = Math.min(Math.max(index, 0), items.length - 1);
+          items.forEach((it, i) => it.classList.toggle('active', i === clamped));
+          el._selectedIndex = clamped;
+        }
+
+        function getWheelValue(el) {
+          return el._values[el._selectedIndex || 0];
+        }
+
+        function selectAmPm(btn) {
+          btn.parentElement.querySelectorAll('.ampm-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        }
+        window.selectAmPm = selectAmPm;
+
+        function openAlarmEditor() {
+          const overlay = document.getElementById('alarmEditorOverlay');
+          if (!overlay) return;
+
+          const hourValues = Array.from({ length: 12 }, (_, i) => String(i + 1));
+          const minuteValues = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
+          buildTimeWheel(document.getElementById('hourWheel'), hourValues, 5);
+          buildTimeWheel(document.getElementById('minuteWheel'), minuteValues, 0);
+
+          document.querySelectorAll('.ampm-btn').forEach(b => b.classList.toggle('active', b.dataset.val === 'AM'));
+          document.querySelectorAll('#alarmEditorDays .editor-day').forEach(d => d.classList.remove('on'));
+          document.getElementById('alarmEditorName').value = '';
+
+          overlay.style.display = 'flex';
+        }
+        window.openAlarmEditor = openAlarmEditor;
+
+        function closeAlarmEditor() {
+          const overlay = document.getElementById('alarmEditorOverlay');
+          if (overlay) overlay.style.display = 'none';
+        }
+        window.closeAlarmEditor = closeAlarmEditor;
+
+        function saveNewAlarm() {
+          const hourWheel = document.getElementById('hourWheel');
+          const minuteWheel = document.getElementById('minuteWheel');
+          const hour12 = parseInt(getWheelValue(hourWheel), 10);
+          const minute = getWheelValue(minuteWheel);
+          const ampm = document.querySelector('.ampm-btn.active')?.dataset.val || 'AM';
+
+          let hour24 = hour12 % 12;
+          if (ampm === 'PM') hour24 += 12;
+          const timeStr = String(hour24).padStart(2, '0') + ':' + minute;
+
+          const selectedDays = Array.from(document.querySelectorAll('#alarmEditorDays .editor-day.on'))
+            .map(d => d.dataset.letter)
+            .join('');
+
+          const name = document.getElementById('alarmEditorName').value.trim();
+
+          const item = document.createElement('div');
+          item.className = 'alarm-item';
+          item.dataset.time = timeStr;
+          item.dataset.enabled = 'true';
+          if (name) item.dataset.label = name;
+          if (selectedDays) {
+            item.dataset.days = selectedDays;
+          } else {
+            const now = new Date();
+            item.dataset.date = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+          }
+
+          document.getElementById('alarmList').appendChild(item);
+          renderAlarmItem(item);
+          renderAlarmCountdown();
+          closeAlarmEditor();
+        }
+        window.saveNewAlarm = saveNewAlarm;
+
+        function renderAlarmItem(item) {
+          const time = item.dataset.time || '00:00';
+          const [hh, mm] = time.split(':').map(Number);
+          const ampm = hh >= 12 ? 'PM' : 'AM';
+          const hour12 = ((hh % 12) === 0) ? 12 : (hh % 12);
+          const enabled = item.dataset.enabled !== 'false';
+
+          let scheduleHtml = '';
+          if (item.dataset.date) {
+            scheduleHtml = `<div class="alarm-item-date">${item.dataset.date}</div>`;
+          } else {
+            const activeDays = (item.dataset.days || '').toUpperCase();
+            const daySpans = ALARM_DAY_LETTERS.map((letter) => {
+              const isOn = activeDays.includes(letter);
+              return `<span class="day${isOn ? ' on' : ''}">${letter}</span>`;
+            }).join('');
+            scheduleHtml = `<div class="alarm-item-days">${daySpans}</div>`;
+          }
+
+          item.classList.toggle('disabled', !enabled);
+          item.innerHTML = `
+            <div class="alarm-item-main">
+              <div class="alarm-item-time">${hour12}:${String(mm).padStart(2, '0')}<span class="ampm">${ampm}</span></div>
+              ${item.dataset.label ? `<div class="alarm-item-label">${item.dataset.label}</div>` : ''}
+              ${scheduleHtml}
+            </div>
+            <label class="alarm-toggle">
+              <input type="checkbox" ${enabled ? 'checked' : ''}>
+              <span class="toggle-slider"></span>
+            </label>
+          `;
+
+          const checkbox = item.querySelector('.alarm-toggle input');
+          checkbox.addEventListener('change', () => {
+            item.dataset.enabled = checkbox.checked ? 'true' : 'false';
+            item.classList.toggle('disabled', !checkbox.checked);
+            renderAlarmCountdown();
+          });
+        }
+
+        function renderAlarmCountdown() {
+          const list = document.getElementById('alarmList');
+          const mainEl = document.getElementById('alarmCountdownText');
+          const subEl = document.getElementById('alarmCountdownDate');
+          if (!list || !mainEl || !subEl) return;
+
+          const items = Array.from(list.querySelectorAll('.alarm-item')).filter(i => i.dataset.enabled !== 'false');
+          if (!items.length) {
+            mainEl.textContent = 'No alarms set';
+            subEl.textContent = '';
+            return;
+          }
+
+          const now = new Date();
+          let soonest = null;
+
+          items.forEach(item => {
+            const [hh, mm] = (item.dataset.time || '00:00').split(':').map(Number);
+            let candidate;
+            if (item.dataset.date) {
+              // One-time alarms: parse "Fri, Aug 14" against the current year
+              const parsed = new Date(`${item.dataset.date} ${now.getFullYear()} ${hh}:${mm}:00`);
+              candidate = isNaN(parsed.getTime()) ? null : parsed;
+            } else {
+              candidate = new Date(now);
+              candidate.setHours(hh, mm, 0, 0);
+              if (candidate <= now) candidate.setDate(candidate.getDate() + 1);
+            }
+            if (candidate && candidate > now && (!soonest || candidate < soonest)) {
+              soonest = candidate;
+            }
+          });
+
+          if (!soonest) {
+            mainEl.textContent = 'No alarms set';
+            subEl.textContent = '';
+            return;
+          }
+
+          const diffMs = soonest - now;
+          const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+          const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
+          mainEl.textContent = `Alarm in ${diffHours} hour${diffHours !== 1 ? 's' : ''} ${diffMinutes} minute${diffMinutes !== 1 ? 's' : ''}`;
+          subEl.textContent = soonest.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
         }
 
         // ==================== CAMERA APP ====================

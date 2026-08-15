@@ -1,14 +1,17 @@
-﻿<div class="recent-item">
-  <div class="recent-name">Mom</div>
-  <div class="recent-meta">Missed • 2m ago</div>
-</div>
+<!-- ==================================================================
+     Recent calls — add more by copying a .recent-call block.
+     data-type is "missed", "outgoing", or "incoming".
+     data-datetime is a local date/time string, e.g. "2026-08-13T14:58".
+     data-count is optional, for repeated calls the same day (defaults to 1).
+     data-audio is the recording URL played when the entry is tapped —
+     leave it empty for "No recording available".
+     ================================================================== -->
+<div class="recent-call" data-name="Mom" data-number="" data-type="missed" data-datetime="2026-08-13T14:58" data-count="1" data-audio=""></div>
+<div class="recent-call" data-name="Dad" data-number="" data-type="outgoing" data-datetime="2026-08-12T10:30" data-count="1" data-audio=""></div>
+<div class="recent-call" data-name="Isagi Yoichi" data-number="" data-type="incoming" data-datetime="2026-08-10T15:45" data-count="1" data-audio=""></div>
 
-<div class="recent-item">
-  <div class="recent-name">Dad</div>
-  <div class="recent-meta">Outgoing • Yesterday</div>
-</div>
-
-<div class="recent-item">
-  <div class="recent-name">Isagi Yoichi</div>
-  <div class="recent-meta">Incoming • 3 days ago</div>
-</div>
+<style>
+.recent-call {
+  display: none;
+}
+</style>

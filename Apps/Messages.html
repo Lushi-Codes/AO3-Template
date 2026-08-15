@@ -78,6 +78,49 @@
   </div>
   <div class="message-meta"><div class="message-date"></div></div>
 </div>
+
+<!-- ==================================================================
+     Thread message data — add new conversations here.
+     Each .thread-data data-id MUST match a .message-item data-id above.
+     Each .thread-msg data-sender is "them" or "you"; data-date is optional
+     and only needs to be set on the first message of a new day.
+     ================================================================== -->
+<div class="thread-data" data-id="shitty-aniki" data-name="Shitty Aniki" data-icon="SN">
+  <div class="thread-msg" data-sender="them" data-time="10:30 AM">Hey, how's it going?</div>
+  <div class="thread-msg" data-sender="you" data-time="10:32 AM">I hate you!</div>
+  <div class="thread-msg" data-sender="them" data-time="10:35 AM">What?? Why?</div>
+</div>
+
+<div class="thread-data" data-id="mom" data-name="Mom" data-icon="M">
+  <div class="thread-msg" data-sender="them" data-time="5:45 PM" data-date="April 11, 2021">Get home safe, darling!</div>
+  <div class="thread-msg" data-sender="you" data-time="5:46 PM">I will, see you soon!</div>
+  <div class="thread-msg" data-sender="them" data-time="10:30 AM" data-date="April 12, 2021">How are you doing?</div>
+  <div class="thread-msg" data-sender="you" data-time="10:31 AM">I'm good! How about you?</div>
+</div>
+
+<div class="thread-data" data-id="dad" data-name="Dad" data-icon="D">
+  <div class="thread-msg" data-sender="them" data-time="2:15 PM">See you in a few weeks, Rin</div>
+  <div class="thread-msg" data-sender="you" data-time="2:16 PM">Safe travels!</div>
+</div>
+
+<div class="thread-data" data-id="isagi-yoichi" data-name="Isagi Yoichi" data-icon="IY">
+  <div class="thread-msg" data-sender="them" data-time="7:20 PM">Want to train together?</div>
+  <div class="thread-msg" data-sender="you" data-time="7:21 PM">Shut up</div>
+</div>
+
+<div class="thread-data" data-id="shidou-ryusei" data-name="Shidou Ryusei" data-icon="SR">
+  <div class="thread-msg" data-sender="them" data-time="6:00 PM">Let's play a match</div>
+  <div class="thread-msg" data-sender="you" data-time="6:01 PM">I'm not interested</div>
+</div>
+
+<div class="thread-data" data-id="miss-anri-teieri" data-name="Miss Anri Teieri" data-icon="MAT">
+  <div class="thread-msg" data-sender="them" data-time="4:30 PM">Please get here before 5 PM. Thank you!</div>
+</div>
+
+<div class="thread-data" data-id="empty-1" data-name="Empty 1" data-icon="?"></div>
+<div class="thread-data" data-id="empty-2" data-name="Empty 2" data-icon="?"></div>
+<div class="thread-data" data-id="empty-3" data-name="Empty 3" data-icon="?"></div>
+
 <!-- Message Thread View -->
 <div class="conversation-thread" id="conversationThread" style="display: none;">
   <div class="thread-header">
@@ -95,6 +138,10 @@
 </div>
 
 <style>
+.thread-data {
+  display: none;
+}
+
 .conversation-thread {
   display: flex;
   flex-direction: column;
@@ -157,15 +204,16 @@
 
 .message {
   display: flex;
+  flex-direction: column;
   margin: 4px 0;
 }
 
 .message.sent {
-  justify-content: flex-end;
+  align-items: flex-end;
 }
 
 .message.received {
-  justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .message-bubble {
@@ -175,6 +223,22 @@
   word-wrap: break-word;
   font-size: 14px;
   line-height: 1.4;
+}
+
+.message-time {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.message.sent .message-time {
+  align-self: flex-end;
+}
+
+.message.received .message-time {
+  align-self: flex-start;
 }
 
 .message.sent .message-bubble {
